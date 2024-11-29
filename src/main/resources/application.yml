@@ -1,0 +1,79 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /medicine-online-client-backend
+
+spring:
+  application:
+    name: share-app-api
+  profiles:
+    active: dev
+  mvc:
+    path-match:
+      matching-strategy: ant_path_matcher
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 100MB
+
+
+mybatis-plus:
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  type-aliases-package: top.ctynt.*.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    cache-enabled: false
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      logic-delete-field: true
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+
+logging:
+  config: classpath:log/logback-spring.xml
+
+# springdoc-openapi
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    tags-sorter: alpha
+    operations-sorter: alpha
+  api-docs:
+    path: /v3/api-docs
+  group-configs:
+    - group: 'default'
+      paths-to-match: '/**'
+      packages-to-scan: medicine.online.client.backend.controller
+
+# knife4j
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+  basic:
+    enable: true
+    username: admin
+    password: 123456
+
+auth:
+  valid_urls:
+    - /auth/logout
+    - /user/**
+
+aliyun:
+  oss:
+    endpoint: oss-cn-hangzhou.aliyuncs.com
+    accessKeyId: LTAI5tF9VgDkGom4hbGCWehh
+    accessKeySecret: C1NO0FfWY79tesbZYkRr4F20xz95Ld
+    bucketName: ctynt-oss
+
+share:
+  sms:
+    ccp:
+      serverIp: app.cloopen.com
+      port: 8883
+      accountSId: 2c94811c8cd4da0a018ef19df80466ea
+      accountToken: ebf8dacdca024b49ac57ed6351a5a0b5
+      appId: 2c94811c8cd4da0a018ef19df98d66f1
+      templateId: 1
