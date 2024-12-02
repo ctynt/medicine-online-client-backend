@@ -10,13 +10,18 @@ import medicine.online.client.backend.common.cache.RedisKeys;
 import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.common.cache.TokenStoreCache;
 import medicine.online.client.backend.common.exception.ServerException;
+import medicine.online.client.backend.convert.UserConvert;
 import medicine.online.client.backend.enums.AccountStatusEnum;
 import medicine.online.client.backend.common.exception.ErrorCode;
+import medicine.online.client.backend.mapper.CityCodeMapper;
 import medicine.online.client.backend.mapper.StudentMapper;
+import medicine.online.client.backend.mapper.StudentProfessionMapper;
 import medicine.online.client.backend.mapper.UserMapper;
+import medicine.online.client.backend.model.dto.UserEditDTO;
 import medicine.online.client.backend.model.dto.WxLoginDTO;
 import medicine.online.client.backend.model.entity.Student;
 import medicine.online.client.backend.model.entity.User;
+import medicine.online.client.backend.model.vo.UserInfoVO;
 import medicine.online.client.backend.model.vo.UserLoginVO;
 import medicine.online.client.backend.service.UserService;
 import medicine.online.client.backend.utils.AESUtil;
@@ -38,6 +43,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final RedisCache redisCache;
     private final TokenStoreCache tokenStoreCache;
     private final StudentMapper studentMapper;
+    private final CityCodeMapper cityCodeMapper;
+    private final StudentProfessionMapper studentProfessionMapper;
 
     @Override
     public UserLoginVO weChatLogin(WxLoginDTO loginDTO) {
@@ -87,7 +94,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             student.setAge(20);
             student.setProfessionId(121);
             studentMapper.insert(student);
-            user.setRoleId(1);
+            user.setRoleId(student.getPkId());
             baseMapper.insert(user);
         }
 
@@ -167,8 +174,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 4. 更新用户手机号
         User user = baseMapper.selectById(userLogin.getUserId());
         user.setPhone(phone);
+        Student student = studentMapper.selectById(user.getRoleId());
+        student.setPhone(phone);
 
-        if (baseMapper.updateById(user) < 1) {
+        if (baseMapper.updateById(user) < 1 & studentMapper.updateById(student) < 1) {
             log.error("用户 [{}] 更新手机号 [{}] 失败", userLogin.getUserId(), phone);
         }
 
@@ -185,6 +194,35 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user.getIsEnable().equals(AccountStatusEnum.ENABLED.getValue());
     }
 
+    @Override
+    public UserInfoVO getUserInfo(){
+        Integer userId = RequestContext.getUserId();
+        // 查询数据库
+        User user = baseMapper.selectById(userId);
+        Student student = studentMapper.selectById(user.getRoleId());
+        if (user == null & student == null) {
+            log.error("⽤户不存在, userId: {}", userId);
+            throw new ServerException(ErrorCode.USER_NOT_EXIST);
+        }
+
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setPhone(student.getPhone());
+        userInfoVO.setSlogan(user.getSlogan());
+        userInfoVO.setAvatar(user.getAvatar());
+        userInfoVO.setNickname(user.getNickname());
+        userInfoVO.setLicence(student.getLicence());
+        userInfoVO.setProfession(studentProfessionMapper.selectById(student.getProfessionId()).getName());
+        userInfoVO.setName(student.getName());
+        userInfoVO.setSex(student.getSex());
+        userInfoVO.setAge(student.getAge());
+        userInfoVO.setPkId(student.getPkId());
+        userInfoVO.setProvince(cityCodeMapper.selectById(user.getProvince()).getName());
+        userInfoVO.setCity(cityCodeMapper.selectById(user.getCity()).getName());
+        userInfoVO.setArea(cityCodeMapper.selectById(user.getArea()).getName());
+        userInfoVO.setHospital(student.getHospital());
+
+        return userInfoVO;
+    }
 
 }
 

@@ -21,10 +21,4 @@ public class CityCode {
     private String name;
     private Integer parentCode;
     private Integer level;
-
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
 }
