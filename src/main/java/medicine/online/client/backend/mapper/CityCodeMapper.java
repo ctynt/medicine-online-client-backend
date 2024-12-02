@@ -14,4 +14,8 @@ public interface CityCodeMapper extends BaseMapper<CityCode> {
     default  CityCode getByCode(Integer code){
         return this.selectOne(new LambdaQueryWrapper<CityCode>().eq(CityCode::getCode, code));
     }
+
+    default CityCode getByName(String name){
+        return this.selectOne(new LambdaQueryWrapper<CityCode>().eq(CityCode::getName, name));
+    }
 }

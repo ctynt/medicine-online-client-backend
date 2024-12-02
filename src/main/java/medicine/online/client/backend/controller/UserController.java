@@ -29,4 +29,10 @@ public class UserController {
         return Result.ok(userService.getUserInfo());
     }
 
+    @PostMapping("update")
+    @Operation(summary = "修改⽤户信息")
+    public Result<UserInfoVO> update(@RequestBody UserEditDTO userEditDTO){
+        return Result.ok(userService.updateInfo(userEditDTO));
+    }
+
 }

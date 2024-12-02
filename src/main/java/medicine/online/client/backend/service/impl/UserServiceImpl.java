@@ -224,5 +224,37 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return userInfoVO;
     }
 
+    @Override
+    public UserInfoVO updateInfo(UserEditDTO userEditDTO) {
+        Integer userId = RequestContext.getUserId();
+        userEditDTO.setPkId(userId);
+        User user = baseMapper.selectById(userId);
+        Student student = studentMapper.selectById(user.getRoleId());
+
+        user.setNickname(userEditDTO.getNickname());
+        student.setName(userEditDTO.getNickname());
+        user.setSlogan(userEditDTO.getSlogan());
+        user.setAvatar(userEditDTO.getAvatar());
+        student.setSex(userEditDTO.getSex());
+        if (userEditDTO.getProvince() != null && userEditDTO.getCity() != null && userEditDTO.getArea() != null) {
+            user.setProvince(cityCodeMapper.getByName(userEditDTO.getProvince()).getPkId());
+            user.setCity(cityCodeMapper.getByName(userEditDTO.getCity()).getPkId());
+            user.setArea(cityCodeMapper.getByName(userEditDTO.getArea()).getPkId());
+        }
+
+        student.setLicence(userEditDTO.getLicence());
+
+        if (user.getPkId() == null) {
+            throw new ServerException(ErrorCode.PARAMS_ERROR);
+        }
+        try {
+            if (baseMapper.updateById(user) < 1 & studentMapper.updateById(student) < 1) {
+                throw new ServerException("修改失败");
+            }
+        } catch (Exception e) {
+            throw new ServerException(e.getMessage());
+        }
+        return this.getUserInfo();
+    }
 }
 

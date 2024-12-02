@@ -18,4 +18,7 @@ public interface UserService extends IService<User> {
 
     UserInfoVO getUserInfo();
 
+    UserInfoVO updateInfo(UserEditDTO userEditDTO);
+
+
 }
