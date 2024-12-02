@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybat
+is.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicine.online.client.backend.mapper.BookMapper">
+
+    <resultMap id="BookResultMap" type="medicine.online.client.backend.model.vo.BookVO">
+        <result property="pkId" column="pk_id" />
+        <result property="title" column="title" />
+        <result property="cover" column="cover" />
+        <result property="browseNum" column="browse_num" />
+        <result property="categoryId" column="category_id" />
+    </resultMap>
+
+    <select id="ztBook" resultMap="BookResultMap">
+        SELECT tb.pk_id, tb.title, tb.cover, tb.browse_num
+        FROM t_book tb
+        JOIN t_subject_associated tsa ON tb.pk_id  = tsa.content_id
+        JOIN t_subject ts ON tsa.subject_id = ts.pk_id
+        WHERE tb.state = 4
+        AND tsa.type = 1
+        AND tsa.subject_id = #{subjectId};
+    </select>
+</mapper>
