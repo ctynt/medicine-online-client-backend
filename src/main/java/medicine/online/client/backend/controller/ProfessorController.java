@@ -4,13 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.Result;
+import medicine.online.client.backend.model.vo.ProfessorCategoryVO;
 import medicine.online.client.backend.model.query.ProfessorQuery;
 import medicine.online.client.backend.model.vo.ProfessorVO;
+import medicine.online.client.backend.service.ProfessorCategoryService;
 import medicine.online.client.backend.service.ProfessorService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -25,10 +24,17 @@ import java.util.List;
 @AllArgsConstructor
 public class ProfessorController {
     private final ProfessorService professorService;
+    private final ProfessorCategoryService professorCategoryService;
 
     @PostMapping("/list")
     @Operation(summary = "专家列表")
     public Result<List<ProfessorVO>> list(@RequestBody ProfessorQuery query) {
         return Result.ok(professorService.getProfessorList(query.getCategoryId()));
+    }
+
+    @GetMapping("/category")
+    @Operation(summary = "专家目录分类")
+    public Result<List<ProfessorCategoryVO>> getProfessorCategories() {
+        return Result.ok(professorCategoryService.listCategoryForCustomer());
     }
 }

@@ -20,8 +20,9 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor> implements ProfessorService {
+    private final ProfessorMapper professorMapper;
     @Override
     public List<ProfessorVO> getProfessorList(Integer categoryId) {
-        return baseMapper.selectByCategoryId(categoryId);
+        return professorMapper.selectByCategoryId(categoryId);
     }
 }

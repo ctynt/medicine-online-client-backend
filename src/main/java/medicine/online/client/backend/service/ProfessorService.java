@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface ProfessorService extends IService<Professor> {
     List<ProfessorVO> getProfessorList(Integer categoryId);
-
 }
