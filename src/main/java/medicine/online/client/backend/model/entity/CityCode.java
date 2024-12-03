@@ -3,8 +3,6 @@ package medicine.online.client.backend.model.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * @Author ctynt
  * @Date 2024/11/27
