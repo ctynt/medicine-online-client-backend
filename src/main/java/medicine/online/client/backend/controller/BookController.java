@@ -10,9 +10,7 @@ import medicine.online.client.backend.model.vo.BookVO;
 import medicine.online.client.backend.service.BookCategoryService;
 import medicine.online.client.backend.service.BookChapterService;
 import medicine.online.client.backend.service.BookService;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -45,9 +43,9 @@ public class BookController {
         return Result.ok(bookService.getBookListByCategoryId(categoryId));
     }
 
-    @PostMapping("/getBookChapterList")
+    @PostMapping("/getBookChapterList/{bookId}")
     @Operation(summary = "获取书籍章节")
-    public Result<List<BookChapterVO>> getListById(Integer bookId) {
+    public Result<List<BookChapterVO>> getListById(@PathVariable Integer bookId) {
         return Result.ok(bookChapterService.getListById(bookId));
     }
 }
