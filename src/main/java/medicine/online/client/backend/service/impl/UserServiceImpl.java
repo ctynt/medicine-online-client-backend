@@ -10,13 +10,18 @@ import medicine.online.client.backend.common.cache.RedisKeys;
 import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.common.cache.TokenStoreCache;
 import medicine.online.client.backend.common.exception.ServerException;
+import medicine.online.client.backend.convert.UserConvert;
 import medicine.online.client.backend.enums.AccountStatusEnum;
 import medicine.online.client.backend.common.exception.ErrorCode;
+import medicine.online.client.backend.mapper.CityCodeMapper;
 import medicine.online.client.backend.mapper.StudentMapper;
+import medicine.online.client.backend.mapper.StudentProfessionMapper;
 import medicine.online.client.backend.mapper.UserMapper;
+import medicine.online.client.backend.model.dto.UserEditDTO;
 import medicine.online.client.backend.model.dto.WxLoginDTO;
 import medicine.online.client.backend.model.entity.Student;
 import medicine.online.client.backend.model.entity.User;
+import medicine.online.client.backend.model.vo.UserInfoVO;
 import medicine.online.client.backend.model.vo.UserLoginVO;
 import medicine.online.client.backend.service.UserService;
 import medicine.online.client.backend.utils.AESUtil;
@@ -38,6 +43,74 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final RedisCache redisCache;
     private final TokenStoreCache tokenStoreCache;
     private final StudentMapper studentMapper;
+    private final CityCodeMapper cityCodeMapper;
+    private final StudentProfessionMapper studentProfessionMapper;
+
+    @Override
+    public UserLoginVO loginByPhone(String phone, String code) {
+        //获取验证码cacheKey
+        String smsCacheKey = RedisKeys.getSmsKey(phone);
+        //从redis中获取验证码
+        Integer redisCode = (Integer) redisCache.get(smsCacheKey);
+        // 校验验证码合法性
+        if (org.springframework.util.ObjectUtils.isEmpty(redisCode) || !redisCode.toString().equals(code)) {
+            throw new ServerException(ErrorCode.SMS_CODE_ERROR);
+        }
+        //删除用过的验证码
+        redisCache.delete(smsCacheKey);
+        //根据手机号获取用户
+        User user = baseMapper.getByPhone(phone);
+        //判断用户是否注册过，如果user为空代表未注册，进行注册。否则开启登录流程
+        if (ObjectUtils.isEmpty(user)) {
+            user = new User();
+            user.setNickname("默认用户名");
+            user.setAvatar("https://ctynt-oss.oss-cn-hangzhou.aliyuncs.com/origin.png");
+            user.setSlogan("这个人很懒，什么都没有写");
+            user.setIsEnable(AccountStatusEnum.ENABLED.getValue());
+            user.setRole(1);
+            user.setHospital(0);
+            // 默认用户为江苏省南京市市辖区 对应pkId
+            user.setProvince(876);
+            user.setCity(877);
+            user.setArea(878);
+
+            Student student = new Student();
+            student.setCityCode(320101);
+            student.setName(user.getNickname());
+            student.setSex(0);
+            student.setIsTest(0);
+            student.setAge(20);
+            student.setProfessionId(121);
+            studentMapper.insert(student);
+            user.setRoleId(student.getPkId());
+            baseMapper.insert(user);
+        }
+
+        // 用户被禁用
+        if (!user.getIsEnable().equals(AccountStatusEnum.ENABLED.getValue())) {
+            throw new ServerException(ErrorCode.ACCOUNT_DISABLED);
+        }
+
+        // 判断是否绑定手机号
+        boolean isPhoneBind = StringUtils.isNotBlank(user.getPhone());
+
+        // 生成令牌
+        String accessToken = JwtUtil.createToken(user.getPkId());
+
+        UserLoginVO userLoginVO = new UserLoginVO();
+        userLoginVO.setUserId(user.getPkId());
+        userLoginVO.setIsBind(isPhoneBind ? 1 : 0);
+        userLoginVO.setPhone(user.getPhone());
+        userLoginVO.setType(1);
+        userLoginVO.setAccessToken(accessToken);
+        userLoginVO.setOpenId(user.getOpenId());
+
+        log.info("token生成: {}", accessToken);
+
+        // 缓存用户信息
+        tokenStoreCache.saveUser(accessToken, userLoginVO);
+        return userLoginVO;
+    }
 
     @Override
     public UserLoginVO weChatLogin(WxLoginDTO loginDTO) {
@@ -87,7 +160,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             student.setAge(20);
             student.setProfessionId(121);
             studentMapper.insert(student);
-            user.setRoleId(1);
+            user.setRoleId(student.getPkId());
             baseMapper.insert(user);
         }
 
@@ -167,8 +240,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         // 4. 更新用户手机号
         User user = baseMapper.selectById(userLogin.getUserId());
         user.setPhone(phone);
+        Student student = studentMapper.selectById(user.getRoleId());
+        student.setPhone(phone);
 
-        if (baseMapper.updateById(user) < 1) {
+        if (baseMapper.updateById(user) < 1 & studentMapper.updateById(student) < 1) {
             log.error("用户 [{}] 更新手机号 [{}] 失败", userLogin.getUserId(), phone);
         }
 
@@ -185,6 +260,67 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         return user.getIsEnable().equals(AccountStatusEnum.ENABLED.getValue());
     }
 
+    @Override
+    public UserInfoVO getUserInfo(){
+        Integer userId = RequestContext.getUserId();
+        // 查询数据库
+        User user = baseMapper.selectById(userId);
+        Student student = studentMapper.selectById(user.getRoleId());
+        if (user == null & student == null) {
+            log.error("⽤户不存在, userId: {}", userId);
+            throw new ServerException(ErrorCode.USER_NOT_EXIST);
+        }
 
+        UserInfoVO userInfoVO = new UserInfoVO();
+        userInfoVO.setPhone(student.getPhone());
+        userInfoVO.setSlogan(user.getSlogan());
+        userInfoVO.setAvatar(user.getAvatar());
+        userInfoVO.setNickname(user.getNickname());
+        userInfoVO.setLicence(student.getLicence());
+        userInfoVO.setProfession(studentProfessionMapper.selectById(student.getProfessionId()).getName());
+        userInfoVO.setName(student.getName());
+        userInfoVO.setSex(student.getSex());
+        userInfoVO.setAge(student.getAge());
+        userInfoVO.setPkId(student.getPkId());
+        userInfoVO.setProvince(cityCodeMapper.selectById(user.getProvince()).getName());
+        userInfoVO.setCity(cityCodeMapper.selectById(user.getCity()).getName());
+        userInfoVO.setArea(cityCodeMapper.selectById(user.getArea()).getName());
+        userInfoVO.setHospital(student.getHospital());
+
+        return userInfoVO;
+    }
+
+    @Override
+    public UserInfoVO updateInfo(UserEditDTO userEditDTO) {
+        Integer userId = RequestContext.getUserId();
+        userEditDTO.setPkId(userId);
+        User user = baseMapper.selectById(userId);
+        Student student = studentMapper.selectById(user.getRoleId());
+
+        user.setNickname(userEditDTO.getNickname());
+        student.setName(userEditDTO.getNickname());
+        user.setSlogan(userEditDTO.getSlogan());
+        user.setAvatar(userEditDTO.getAvatar());
+        student.setSex(userEditDTO.getSex());
+        if (userEditDTO.getProvince() != null && userEditDTO.getCity() != null && userEditDTO.getArea() != null) {
+            user.setProvince(cityCodeMapper.getByName(userEditDTO.getProvince()).getPkId());
+            user.setCity(cityCodeMapper.getByName(userEditDTO.getCity()).getPkId());
+            user.setArea(cityCodeMapper.getByName(userEditDTO.getArea()).getPkId());
+        }
+
+        student.setLicence(userEditDTO.getLicence());
+
+        if (user.getPkId() == null) {
+            throw new ServerException(ErrorCode.PARAMS_ERROR);
+        }
+        try {
+            if (baseMapper.updateById(user) < 1 & studentMapper.updateById(student) < 1) {
+                throw new ServerException("修改失败");
+            }
+        } catch (Exception e) {
+            throw new ServerException(e.getMessage());
+        }
+        return this.getUserInfo();
+    }
 }
 
