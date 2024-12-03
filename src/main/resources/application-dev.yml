@@ -3,9 +3,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       driver-class-name: com.mysql.cj.jdbc.Driver
-      url: jdbc:mysql://rm-bp1k3910p07nkttl93o.mysql.rds.aliyuncs.com/1_medicine_online?useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
-      username: rootmax
-      password: Al731028@
+      url: jdbc:mysql://rm-gc7vz5fpb4ap2t5325o.mysql.cn-chengdu.rds.aliyuncs.com/medicine_online_1?useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+      username: soft2213_group1
+      password: soft2213_group1
       initial-size: 5
       min-idle: 5
       max-active: 20
