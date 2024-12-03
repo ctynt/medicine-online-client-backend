@@ -4,10 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.Result;
-import medicine.online.client.backend.model.entity.BookCategory;
 import medicine.online.client.backend.model.vo.BookCategoryVO;
+import medicine.online.client.backend.model.vo.BookChapterVO;
 import medicine.online.client.backend.model.vo.BookVO;
 import medicine.online.client.backend.service.BookCategoryService;
+import medicine.online.client.backend.service.BookChapterService;
 import medicine.online.client.backend.service.BookService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,6 +31,8 @@ public class BookController {
 
     private final BookCategoryService bookCategoryService;
 
+    private final BookChapterService bookChapterService;
+
     @PostMapping("/category")
     @Operation(summary = "书本分类")
     public Result<List<BookCategoryVO>> getCategoryList() {
@@ -40,5 +43,11 @@ public class BookController {
     @Operation(summary = "书本列表")
     public Result<List<BookVO>> getList(Integer categoryId) {
         return Result.ok(bookService.getBookListByCategoryId(categoryId));
+    }
+
+    @PostMapping("/getBookChapterList")
+    @Operation(summary = "获取书籍章节")
+    public Result<List<BookChapterVO>> getListById(Integer bookId) {
+        return Result.ok(bookChapterService.getListById(bookId));
     }
 }
