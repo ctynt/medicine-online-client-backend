@@ -47,6 +47,72 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     private final StudentProfessionMapper studentProfessionMapper;
 
     @Override
+    public UserLoginVO loginByPhone(String phone, String code) {
+        //获取验证码cacheKey
+        String smsCacheKey = RedisKeys.getSmsKey(phone);
+        //从redis中获取验证码
+        Integer redisCode = (Integer) redisCache.get(smsCacheKey);
+        // 校验验证码合法性
+        if (org.springframework.util.ObjectUtils.isEmpty(redisCode) || !redisCode.toString().equals(code)) {
+            throw new ServerException(ErrorCode.SMS_CODE_ERROR);
+        }
+        //删除用过的验证码
+        redisCache.delete(smsCacheKey);
+        //根据手机号获取用户
+        User user = baseMapper.getByPhone(phone);
+        //判断用户是否注册过，如果user为空代表未注册，进行注册。否则开启登录流程
+        if (ObjectUtils.isEmpty(user)) {
+            user = new User();
+            user.setNickname("默认用户名");
+            user.setAvatar("https://ctynt-oss.oss-cn-hangzhou.aliyuncs.com/origin.png");
+            user.setSlogan("这个人很懒，什么都没有写");
+            user.setIsEnable(AccountStatusEnum.ENABLED.getValue());
+            user.setRole(1);
+            user.setHospital(0);
+            // 默认用户为江苏省南京市市辖区 对应pkId
+            user.setProvince(876);
+            user.setCity(877);
+            user.setArea(878);
+
+            Student student = new Student();
+            student.setCityCode(320101);
+            student.setName(user.getNickname());
+            student.setSex(0);
+            student.setIsTest(0);
+            student.setAge(20);
+            student.setProfessionId(121);
+            studentMapper.insert(student);
+            user.setRoleId(student.getPkId());
+            baseMapper.insert(user);
+        }
+
+        // 用户被禁用
+        if (!user.getIsEnable().equals(AccountStatusEnum.ENABLED.getValue())) {
+            throw new ServerException(ErrorCode.ACCOUNT_DISABLED);
+        }
+
+        // 判断是否绑定手机号
+        boolean isPhoneBind = StringUtils.isNotBlank(user.getPhone());
+
+        // 生成令牌
+        String accessToken = JwtUtil.createToken(user.getPkId());
+
+        UserLoginVO userLoginVO = new UserLoginVO();
+        userLoginVO.setUserId(user.getPkId());
+        userLoginVO.setIsBind(isPhoneBind ? 1 : 0);
+        userLoginVO.setPhone(user.getPhone());
+        userLoginVO.setType(1);
+        userLoginVO.setAccessToken(accessToken);
+        userLoginVO.setOpenId(user.getOpenId());
+
+        log.info("token生成: {}", accessToken);
+
+        // 缓存用户信息
+        tokenStoreCache.saveUser(accessToken, userLoginVO);
+        return userLoginVO;
+    }
+
+    @Override
     public UserLoginVO weChatLogin(WxLoginDTO loginDTO) {
         String url = "https://api.weixin.qq.com/sns/jscode2session?" +
                 "appid=" + APP_ID +

@@ -20,5 +20,5 @@ public interface UserService extends IService<User> {
 
     UserInfoVO updateInfo(UserEditDTO userEditDTO);
 
-
+    UserLoginVO loginByPhone(String phone, String code);
 }
