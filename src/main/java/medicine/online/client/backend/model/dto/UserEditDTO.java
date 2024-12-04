@@ -24,9 +24,15 @@ public class UserEditDTO {
     @Schema(description = "医院")
     private Integer hospital;
 
-    @Schema(description = "城市编号")
-    private String cityCode;
+    @Schema(description = "省")
+    private String province;
 
-    @Schema(description = "描述")
-    private String license;
+    @Schema(description = "市")
+    private String city;
+
+    @Schema(description = "区")
+    private String area;
+
+    @Schema(description = "学位")
+    private String licence;
 }
