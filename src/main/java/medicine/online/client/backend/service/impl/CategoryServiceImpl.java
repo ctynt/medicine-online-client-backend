@@ -29,7 +29,7 @@ public class CategoryServiceImpl extends ServiceImpl<CategoryMapper, Category> i
     private CategoryMapper categoryMapper;
 
     @Override
-    public List<CategoryVO> getCategoryListByParentId(Long parentId) {
+    public List<CategoryVO> getCategoryListByParentId(Integer parentId) {
         LambdaQueryWrapper<Category> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(parentId!= null, Category::getParentId, parentId);
         List<Category> categoryList = categoryMapper.selectList(wrapper);

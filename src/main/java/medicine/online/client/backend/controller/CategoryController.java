@@ -29,10 +29,15 @@ public class CategoryController {
 
     @GetMapping("/categorylist")
     @Operation(summary = "首页分类子列表")
-    public List<CategoryVO> getCategoryListByParentId(@RequestParam(required = false) Long parentId) {
-        return categoryService.getCategoryListByParentId(parentId);
+    public Result<List<CategoryVO>> getCategoryListByParentId(@RequestParam(required = false) Integer parentId) {
+        return Result.ok(categoryService.getCategoryListByParentId(parentId));
     }
 
+//    @GetMapping("/categorylist")
+//    @Operation(summary = "首页分类子列表")
+//    public List<CategoryVO> getCategoryListByParentId(@RequestParam(required = false) Integer parentId) {
+//        return categoryService.getCategoryListByParentId(parentId);
+//    }
 
 }
 
