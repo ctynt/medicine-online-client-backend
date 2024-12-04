@@ -29,7 +29,7 @@ public class rCategoryController {
 
     @GetMapping("/item/categorylist")
     @Operation(summary = "专题视频分类子列表")
-    public List<rCategoryVO> getrCategoryListByParentId(@RequestParam(required = false) Long parentId) {
-        return rcategoryService.getrCategoryListByParentId(parentId);
+    public Result<List<rCategoryVO>> getrCategoryListByParentId(@RequestParam(required = false) Long parentId) {
+        return Result.ok(rcategoryService.getrCategoryListByParentId(parentId));
     }
 }
