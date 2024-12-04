@@ -31,6 +31,7 @@ public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor
     private final StudentProfessionMapper studentProfessionMapper;
     private final ProfessorCategoryMapper professorCategoryMapper;
     private final TopicMapper topicMapper;
+
     @Override
     public List<ProfessorVO> getProfessorList(Integer categoryId) {
         return professorMapper.selectByCategoryId(categoryId);
@@ -39,7 +40,7 @@ public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor
     @Override
     public ProfessorDetailVO getProfessorDetail(Integer id) {
         LambdaQueryWrapper<Topic> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Topic::getProfessorId, id);
+        queryWrapper.eq(Topic::getProfessorId, id).eq(Topic::getDeleteFlag, 0);
         List<Topic> topics = topicMapper.selectList(queryWrapper);
         List<TopicVO> topicVOS = topics.stream().map(topic -> {
             TopicVO topicVO = new TopicVO();
@@ -56,7 +57,7 @@ public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor
             studentQueryWrapper.eq(Student::getPhone, user.getPhone());
             Student student = studentMapper.selectOne(studentQueryWrapper);
             StudentProfession studentProfession = studentProfessionMapper.selectById(student.getProfessionId());
-            topicVO.setTag(category.getName()+" "+studentProfession.getName());
+            topicVO.setTag(category.getName() + " " + studentProfession.getName());
             topicVO.setImg(topic.getImg());
             return topicVO;
         }).collect(Collectors.toList());
@@ -78,7 +79,7 @@ public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor
         professorDetailVO.setProfession(professor.getProfession());
         professorDetailVO.setMajorField(professor.getMajorField());
         professorDetailVO.setBrief(professor.getBrief());
-        professorDetailVO.setExperince(professor.getExperince());
+        professorDetailVO.setExperience(professor.getExperience());
         professorDetailVO.setDepartment(professor.getHospital());
         professorDetailVO.setList(topicVOS);
         return professorDetailVO;

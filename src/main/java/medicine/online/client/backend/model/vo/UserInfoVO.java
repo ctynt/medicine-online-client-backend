@@ -27,14 +27,8 @@ public class UserInfoVO implements Serializable {
     @Schema(description = "文化程度")
     private String licence;
 
-    @Schema(description = "工作单位")
-    private String company;
-
     @Schema(description = "职业类别")
     private String profession;
-
-    @Schema(description = "类型")
-    private Integer type;
 
     @Schema(description = "姓名")
     private String name;

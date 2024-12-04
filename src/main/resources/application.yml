@@ -1,11 +1,11 @@
 server:
-  port: 8080
+  port: 8089
   servlet:
     context-path: /medicine-online-client-backend
 
 spring:
   application:
-    name: share-app-api
+    name: medicine-online-client-backend
   profiles:
     active: dev
   mvc:
@@ -19,7 +19,7 @@ spring:
 
 mybatis-plus:
   mapper-locations: classpath:/mapper/*Mapper.xml
-  type-aliases-package: top.ctynt.*.entity
+  type-aliases-package: medicine.online.client.backend.*.entity
   configuration:
     map-underscore-to-camel-case: true
     cache-enabled: false

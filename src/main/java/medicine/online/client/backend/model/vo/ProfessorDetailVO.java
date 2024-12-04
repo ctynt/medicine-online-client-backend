@@ -35,7 +35,7 @@ public class ProfessorDetailVO implements Serializable {
     @Schema(description = "专家简介")
     private String brief;
     @Schema(description = "专家履历")
-    private String experince;
+    private String experience;
     @Schema(description = "工作单位")
     private String department;
 

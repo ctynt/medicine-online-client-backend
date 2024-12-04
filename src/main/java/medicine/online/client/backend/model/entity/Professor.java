@@ -23,15 +23,19 @@ public class Professor {
     private String profession;
     private String majorField;
     private Integer sex;
-    private String brith;
+    private String birth;
     private String phone;
     private String avatar;
     private String brief;
-    private String experince;
+    private String experience;
 
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
+    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
+    @TableLogic
+    private Integer deleteFlag;
 }

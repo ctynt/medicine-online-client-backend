@@ -26,6 +26,9 @@ public class Topic {
     private Integer status;
     private String remark;
     private Integer judgeStatus;
+
+    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
+    @TableLogic
     private Integer deleteFlag;
 
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)

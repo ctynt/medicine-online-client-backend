@@ -13,7 +13,7 @@ public class SwaggerConfig {
     public OpenAPI customOpenApi() {
         return new OpenAPI()
                 .info(new Info()
-                        .title("资源分享应⽤ API")
+                        .title("中医在线 API")
                         .contact(new Contact().name("ctynt").email("2597704619@qq.com"))
                         .version("1.0")
                         .description("资源分享应⽤ API 接⼝⽂档")
