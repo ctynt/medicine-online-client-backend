@@ -1,5 +1,6 @@
 package medicine.online.client.backend.service.impl;
 
+
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,15 +13,17 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @Author ctynt
- * @Date 2024/12/3
- * @Description BookServiceImpl
- */
 @Slf4j
 @Service
 @AllArgsConstructor
 public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements BookService {
+
+    @Override
+    public List<BookVO> ztBook(Integer subjectId) {
+        return baseMapper.ztBook(subjectId);
+    }
+    
+  
     @Override
     public List<BookVO> getBookListByCategoryId(Integer categoryId) {
         List<Book> books = baseMapper.selectListByCategoryId(categoryId);

@@ -5,12 +5,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
-/**
- * @Author ctynt
- * @Date 2024/12/3
- * @Description Book
- */
-
 @Data
 @TableName("t_book")
 public class Book {
