@@ -1,21 +1,23 @@
 package medicine.online.client.backend.controller;
 
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
+import medicine.online.client.backend.model.dto.StarDTO;
+import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
 import medicine.online.client.backend.service.StarService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.*;
+
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * @author WangL
+ * @description 收藏模块 Controller 层
  */
 @RestController
 @RequestMapping("/star")
@@ -26,34 +28,19 @@ public class StarController {
     private final StarService starService;
 
     /**
-     * 删除收藏
+     * 查询收藏列表
      */
-    @PostMapping("/deleteCollection")
-    @Operation(summary = "删除收藏")
-    public ResponseEntity<Map<String, Object>> deleteCollection(@RequestBody Map<String, Object> requestParams) {
-        Integer contentId = (Integer) requestParams.get("contentId");
-        Integer type = (Integer) requestParams.get("type");
-
+    @PostMapping("/list")
+    @Operation(summary = "查询收藏列表")
+    public ResponseEntity<Map<String, Object>> getCollectionList(@RequestBody StarQuery collectionQuery) {
         Map<String, Object> response = new HashMap<>();
 
-        if (contentId == null || type == null) {
-            response.put("code", 400);
-            response.put("msg", "缺少必要参数");
-            return ResponseEntity.badRequest().body(response);
-        }
+        // 调用 Service 层查询收藏列表
+        Page<StarVO> result = starService.getCollectionList(collectionQuery);
 
-        boolean isDeleted = starService.deleteCollection(contentId, type);
-
-        if (isDeleted) {
-            response.put("code", 200);
-            response.put("msg", "删除收藏成功");
-            response.put("data", null);
-            // 删除操作成功后可以返回空数据
-        } else {
-            response.put("code", 500);
-            response.put("msg", "删除收藏失败");
-            response.put("data", null);
-        }
+        response.put("code", 200);
+        response.put("msg", "查询成功");
+        response.put("data", result);
 
         return ResponseEntity.ok(response);
     }
@@ -61,63 +48,44 @@ public class StarController {
     /**
      * 添加收藏
      */
-    @PostMapping("/addCollection")
+    @PostMapping("/add")
     @Operation(summary = "添加收藏")
-    public ResponseEntity<Map<String, Object>> addCollection(@RequestBody Map<String, Object> requestParams) {
-        Integer contentId = (Integer) requestParams.get("contentId");
-        Integer type = (Integer) requestParams.get("type");
-
+    public ResponseEntity<Map<String, Object>> addCollection(@RequestBody StarDTO starDTO) {
         Map<String, Object> response = new HashMap<>();
 
-        // 检查参数
-        if (contentId == null || type == null) {
-            response.put("code", 400);
-            response.put("msg", "缺少必要参数");
-            return ResponseEntity.badRequest().body(response);
-        }
+        // 调用 Service 层添加收藏
+        boolean success = starService.addCollection(starDTO);
 
-        // 调用 Service 层逻辑添加收藏
-        boolean isAdded = starService.addCollection(contentId, type);
-
-        if (isAdded) {
+        if (success) {
             response.put("code", 200);
             response.put("msg", "添加收藏成功");
-            response.put("data", null);
         } else {
             response.put("code", 500);
             response.put("msg", "添加收藏失败");
-            response.put("data", null);
         }
 
         return ResponseEntity.ok(response);
     }
 
     /**
-     * 查询收藏列表
+     * 删除收藏
      */
-    @PostMapping("/collection/list")
-    @Operation(summary = "查询收藏列表")
-    public ResponseEntity<Map<String, Object>> getCollectionList(@RequestBody Map<String, Object> requestParams) {
-        Integer pageNum = (Integer) requestParams.get("pageNum");
-        Integer pageSize = (Integer) requestParams.get("pageSize");
-
+    @PostMapping("/delete")
+    @Operation(summary = "删除收藏")
+    public ResponseEntity<Map<String, Object>> deleteCollection(@RequestBody StarDTO starDTO) {
         Map<String, Object> response = new HashMap<>();
 
-        if (pageNum == null || pageSize == null) {
-            response.put("code", 400);
-            response.put("msg", "缺少必要参数");
-            return ResponseEntity.badRequest().body(response);
+        // 调用 Service 层删除收藏
+        boolean success = starService.deleteCollection(starDTO);
+
+        if (success) {
+            response.put("code", 200);
+            response.put("msg", "删除收藏成功");
+        } else {
+            response.put("code", 500);
+            response.put("msg", "删除收藏失败");
         }
-
-        // 获取分页结果
-        Page<StarVO> page = starService.getCollectionList(pageNum, pageSize);
-
-        response.put("code", 200);
-        response.put("msg", "查询成功");
-        response.put("data", page);
 
         return ResponseEntity.ok(response);
     }
-
 }
-

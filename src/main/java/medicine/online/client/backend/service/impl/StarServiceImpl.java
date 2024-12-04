@@ -7,8 +7,10 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import medicine.online.client.backend.mapper.NewsMapper;
 import medicine.online.client.backend.mapper.StarMapper;
+import medicine.online.client.backend.model.dto.StarDTO;
 import medicine.online.client.backend.model.entity.News;
 import medicine.online.client.backend.model.entity.Star;
+import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
 import medicine.online.client.backend.service.StarService;
 import org.springframework.stereotype.Service;
@@ -19,6 +21,7 @@ import java.util.stream.Collectors;
 
 /**
  * @author WangL
+ * @description 收藏业务逻辑实现类
  */
 @Slf4j
 @Service
@@ -28,96 +31,39 @@ public class StarServiceImpl implements StarService {
     private final StarMapper starMapper;
     private final NewsMapper newsMapper;
 
+    /**
+     * 查询用户的收藏列表（分页）
+     */
     @Override
-    public boolean deleteCollection(Integer contentId, Integer type) {
-        Integer userId = getCurrentUserId();
-        // 假设获取当前用户 ID 的方法
-
-        // 更新 delete_flag 为 1（标记为已删除）
-        UpdateWrapper<Star> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("user_id", userId)
-                .eq("content_id", contentId)
-                .eq("type", type)
-                .eq("delete_flag", 0)
-                // 确保未删除
-                .set("delete_flag", 1);
-        // 将 delete_flag 更新为 1
-        // 执行更新操作，返回受影响的行数
-        int result = starMapper.update(null, updateWrapper);
-
-        // 确保该收藏当前未删除
-
-        // 执行更新操作，返回受影响的行数
-
-
-        if (result > 0) {
-            log.info("删除收藏成功，contentId: {}, type: {}", contentId, type);
-        } else {
-            log.error("删除收藏失败，contentId: {}, type: {}", contentId, type);
-        }
-
-        return result > 0;
-        // 如果更新成功，返回 true
-    }
-
-    @Override
-    public boolean addCollection(Integer contentId, Integer type) {
-        Integer userId = getCurrentUserId();
-        // 获取当前用户 ID（你可以根据实际情况调整）
-
-        // 创建 Star 实体对象
-        Star star = new Star();
-        star.setUserId(userId);
-        star.setContentId(contentId);
-        star.setType(type);
-        star.setDeleteFlag(0);
-        // 默认未删除
-        star.setCreateTime(LocalDateTime.now());
-        // 设置当前时间
-        star.setUpdateTime(LocalDateTime.now());
-
-        // 插入数据
-        int result = starMapper.insert(star);
-
-        // 判断插入是否成功
-        if (result > 0) {
-            log.info("添加收藏成功，contentId: {}, type: {}", contentId, type);
-        } else {
-            log.error("添加收藏失败，contentId: {}, type: {}", contentId, type);
-        }
-
-        return result > 0;
-        // 如果插入成功，返回 true
-    }
-
-    @Override
-    public Page<StarVO> getCollectionList(Integer pageNum, Integer pageSize) {
-        Integer userId = getCurrentUserId();
-        // 获取当前用户ID
-
-        // 构建查询条件，查询当前用户的收藏记录，并且 delete_flag = 0（未删除）
-        QueryWrapper<Star> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("user_id", userId)
-                // 确保查询指定用户的收藏
-                .eq("delete_flag", 0);
-        // 确保查询未删除的收藏记录
+    public Page<StarVO> getCollectionList(StarQuery collectionQuery) {
+        Integer userId = collectionQuery.getUserId();
+        // 获取用户ID
+        Integer pageNum = collectionQuery.getPageNum();
+        // 当前页
+        Integer pageSize = collectionQuery.getPageSize();
+        // 每页条数
 
         // 创建分页对象
         Page<Star> page = new Page<>(pageNum, pageSize);
 
-        // 查询分页数据
+        // 构建查询条件：查询指定用户的收藏记录，删除标记为0（未删除）
+        QueryWrapper<Star> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("user_id", userId)
+                .eq("delete_flag", 0);
+        // 只查询未删除的收藏记录
+
+        // 执行分页查询
         Page<Star> starPage = starMapper.selectPage(page, queryWrapper);
 
-        // 转换为 VO 对象，并填充相关的资讯信息
+        // 转换为 VO 对象并填充相关内容信息（这里以资讯为例）
         List<StarVO> starVOList = starPage.getRecords().stream().map(star -> {
             StarVO starVO = new StarVO();
             starVO.setPkId(star.getPkId());
             starVO.setContentId(star.getContentId());
             starVO.setType(star.getType());
 
-            // 获取资讯详情
+            // 获取资讯详情（这里假设我们是收藏了资讯，可以根据实际情况修改）
             News news = newsMapper.selectById(star.getContentId());
-            // 使用 newsMapper 查询资讯
             if (news != null) {
                 starVO.setInfo(news);
             }
@@ -125,7 +71,7 @@ public class StarServiceImpl implements StarService {
             return starVO;
         }).collect(Collectors.toList());
 
-        // 创建并返回分页结果
+        // 返回分页数据
         Page<StarVO> result = new Page<>();
         result.setRecords(starVOList);
         result.setTotal(starPage.getTotal());
@@ -136,10 +82,61 @@ public class StarServiceImpl implements StarService {
         return result;
     }
 
+    /**
+     * 添加收藏
+     */
+    @Override
+    public boolean addCollection(StarDTO starDTO) {
+        Integer userId = getCurrentUserId();
+        // 获取当前用户ID
 
+        // 创建收藏记录
+        Star star = new Star();
+        star.setUserId(userId);
+        star.setContentId(starDTO.getContentId());
+        star.setType(starDTO.getType());
+        star.setDeleteFlag(0);
+        // 默认未删除
+        star.setCreateTime(LocalDateTime.now());
+        star.setUpdateTime(LocalDateTime.now());
+
+        // 插入收藏记录
+        int result = starMapper.insert(star);
+
+        // 返回结果
+        return result > 0;
+    }
+
+    /**
+     * 删除收藏
+     */
+    @Override
+    public boolean deleteCollection(StarDTO starDTO) {
+        Integer userId = getCurrentUserId();
+        // 获取当前用户ID
+
+        // 更新收藏记录的删除标志为 1（已删除）
+        UpdateWrapper<Star> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.eq("user_id", userId)
+                .eq("content_id", starDTO.getContentId())
+                .eq("type", starDTO.getType())
+                .eq("delete_flag", 0)
+                // 只更新未删除的记录
+                .set("delete_flag", 1);
+                // 更新为已删除
+
+        // 执行更新操作
+        int result = starMapper.update(null, updateWrapper);
+
+        return result > 0;
+    }
+
+    /**
+     * 获取当前用户ID（模拟获取用户ID，实际可根据用户会话或 JWT 获取）
+     */
     private Integer getCurrentUserId() {
-        // 返回当前用户ID，待实现
-        return 357;
-        // 目前先默认用户id为1
+        // 返回当前用户ID，模拟获取
+        // 默认返回用户ID 1
+        return 1;
     }
 }
