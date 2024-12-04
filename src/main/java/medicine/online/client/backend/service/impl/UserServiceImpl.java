@@ -87,7 +87,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             student.setAge(20);
             student.setProfessionId(121);
             studentMapper.insert(student);
-            user.setRoleId(1);
+            user.setRoleId(student.getPkId());
             baseMapper.insert(user);
         }
 
