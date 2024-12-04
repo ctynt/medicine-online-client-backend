@@ -11,10 +11,20 @@
         <result property="starNum" column="star_num"/>
     </resultMap>
 
+<!--    上新视频-->
     <select id="getsPageCourseList" resultMap="CourseMap">
         SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
         FROM t_course tc
         WHERE  tc.state = 4
+    </select>
+
+<!--    专题视频-->
+    <select id="getPageCourseList" resultMap="CourseMap">
+        SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
+        FROM t_course tc
+                 LEFT JOIN t_subject_associated tsa ON tc.pk_id = tsa.content_id
+        WHERE tc.state = 4 AND tc.category_id = #{categoryId}
+        ORDER BY tc.sort
     </select>
 
 </mapper>

@@ -26,4 +26,10 @@ public class CourseController {
         return Result.ok(courseService.getsPageCourseList(query));
     }
 
+    @PostMapping("item/courseList/{categoryId}")
+    @Operation(summary = "专题分页视频列表")
+    public Result<PageResult<CourseVO>> page(@RequestBody @Valid Query query, @PathVariable Integer categoryId) {
+        return Result.ok(courseService.getPageCourseList(query, categoryId));
+    }
+
 }

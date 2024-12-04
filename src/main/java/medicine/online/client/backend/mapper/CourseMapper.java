@@ -17,5 +17,8 @@ public interface CourseMapper extends BaseMapper<Course> {
     // 获取分页上新视频列表方法
     List<CourseVO> getsPageCourseList(Page<CourseVO> page, @Param("query") Query query);
 
+    // 获取分页专题分类列表方法
+    List<CourseVO> getPageCourseList(Page<CourseVO> page, @Param("query") Query query, Integer categoryId);
+
 
 }
