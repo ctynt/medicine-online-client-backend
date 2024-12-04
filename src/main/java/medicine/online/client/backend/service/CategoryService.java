@@ -10,5 +10,5 @@ public interface CategoryService extends IService<Category> {
 
     List<CategoryVO> getCategoryList();
 
-    List<CategoryVO> getCategoryListByParentId(Long parentId);
+    List<CategoryVO> getCategoryListByParentId(Integer parentId);
 }
