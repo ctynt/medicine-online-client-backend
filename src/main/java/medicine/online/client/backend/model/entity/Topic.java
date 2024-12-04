@@ -11,23 +11,22 @@ import java.time.LocalDateTime;
  * @description:
  */
 @Data
-@TableName("t_professor")
-public class Professor {
+@TableName("t_topic")
+public class Topic {
     @TableId(value = "pk_id", type = IdType.AUTO)
     private Integer pkId;
 
-    private Integer categoryId;
-    private String hospital;
-    private String name;
-    private String title;
-    private String profession;
-    private String majorField;
-    private Integer sex;
-    private String brith;
-    private String phone;
-    private String avatar;
-    private String brief;
-    private String experince;
+    private Integer userId;
+    private Integer professorId;
+    private String content;
+    private String img;
+    /**
+     * @see medicine.online.client.backend.enums.TopicStatusEnum
+     */
+    private Integer status;
+    private String remark;
+    private Integer judgeStatus;
+    private Integer deleteFlag;
 
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;

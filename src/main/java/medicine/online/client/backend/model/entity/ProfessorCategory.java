@@ -25,7 +25,7 @@ public class ProfessorCategory {
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    private byte level;
+    private Integer level;
     private Integer parentId;
     private Integer sort;
 }

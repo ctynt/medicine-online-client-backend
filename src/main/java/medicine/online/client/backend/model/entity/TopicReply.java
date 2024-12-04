@@ -11,23 +11,17 @@ import java.time.LocalDateTime;
  * @description:
  */
 @Data
-@TableName("t_professor")
-public class Professor {
+@TableName("t_topic_reply")
+public class TopicReply {
     @TableId(value = "pk_id", type = IdType.AUTO)
     private Integer pkId;
 
-    private Integer categoryId;
-    private String hospital;
-    private String name;
-    private String title;
-    private String profession;
-    private String majorField;
-    private Integer sex;
-    private String brith;
-    private String phone;
-    private String avatar;
-    private String brief;
-    private String experince;
+    private Integer userId;
+    private Integer topicId;
+    private String content;
+    private String img;
+    private Integer judgeStatus;
+    private Integer deleteFlag;
 
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;

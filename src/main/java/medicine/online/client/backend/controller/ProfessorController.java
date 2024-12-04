@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.model.vo.ProfessorCategoryVO;
 import medicine.online.client.backend.model.query.ProfessorQuery;
+import medicine.online.client.backend.model.vo.ProfessorDetailVO;
 import medicine.online.client.backend.model.vo.ProfessorVO;
 import medicine.online.client.backend.service.ProfessorCategoryService;
 import medicine.online.client.backend.service.ProfessorService;
@@ -32,9 +33,17 @@ public class ProfessorController {
         return Result.ok(professorService.getProfessorList(query.getCategoryId()));
     }
 
-    @GetMapping("/category")
+    @PostMapping("/category")
     @Operation(summary = "专家目录分类")
     public Result<List<ProfessorCategoryVO>> getProfessorCategories() {
         return Result.ok(professorCategoryService.listCategoryForCustomer());
     }
+
+    @PostMapping("/detail/{id}")
+    @Operation(summary = "专家详情")
+    public Result<ProfessorDetailVO> getProfessorDetail(@PathVariable Integer id) {
+        return Result.ok(professorService.getProfessorDetail(id));
+    }
+
+
 }
