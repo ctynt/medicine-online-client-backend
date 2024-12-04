@@ -23,4 +23,5 @@ public interface Constant {
     String WX_SESSION_KEY = "session_key";
     //前端没有登录的时候会携带的token，后续会用到
     String NO_TOKEN = "no-token";
+    Integer ROOT = 0;
 }
