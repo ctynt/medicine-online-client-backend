@@ -8,6 +8,8 @@ import medicine.online.client.backend.model.entity.Collection;
 import medicine.online.client.backend.service.CollectionService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+
 /**
  * @author WangL
  */
@@ -50,9 +52,39 @@ public class CollectionServiceImpl implements CollectionService {
         // 如果更新成功，返回 true
     }
 
+    @Override
+    public boolean addCollection(Integer contentId, Integer type) {
+        Integer userId = getCurrentUserId();
+        // 获取当前用户 ID（你可以根据实际情况调整）
+
+        // 创建 Collection 实体对象
+        Collection collection = new Collection();
+        collection.setUserId(userId);
+        collection.setContentId(contentId);
+        collection.setType(type);
+        collection.setDeleteFlag(0);
+        // 默认未删除
+        collection.setCreateTime(LocalDateTime.now());
+        // 设置当前时间
+        collection.setUpdateTime(LocalDateTime.now());
+
+        // 插入数据
+        int result = collectionMapper.insert(collection);
+
+        // 判断插入是否成功
+        if (result > 0) {
+            log.info("添加收藏成功，contentId: {}, type: {}", contentId, type);
+        } else {
+            log.error("添加收藏失败，contentId: {}, type: {}", contentId, type);
+        }
+
+        return result > 0;
+        // 如果插入成功，返回 true
+    }
+
     private Integer getCurrentUserId() {
-        // 假设这里返回当前用户 ID，可以通过 Session、JWT 等获取
+        // 返回当前用户ID，待实现
         return 1;
-        // 示例返回值
+        // 目前先默认用户id为1
     }
 }
