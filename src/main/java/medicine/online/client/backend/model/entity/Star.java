@@ -10,7 +10,7 @@ import java.time.LocalDateTime;
  */
 @Data
 @TableName("t_user_star")
-public class Collection {
+public class Star {
 
     @TableId(value = "pk_id", type = IdType.AUTO)
     private Integer pkId;

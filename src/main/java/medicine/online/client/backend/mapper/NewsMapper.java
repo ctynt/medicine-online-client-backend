@@ -23,5 +23,6 @@ public interface NewsMapper extends BaseMapper<News> {
 
 //    获取资讯列表详情详情方法
     NewsVO getNewsDetail(Integer id);
-
+    // 查询资讯详情
+    News selectById(Integer id);
 }
