@@ -4,6 +4,7 @@ package medicine.online.client.backend.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import medicine.online.client.backend.convert.BookConvert;
 import medicine.online.client.backend.mapper.BookMapper;
 import medicine.online.client.backend.model.entity.Book;
 import medicine.online.client.backend.model.vo.BookVO;
@@ -20,5 +21,12 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     @Override
     public List<BookVO> ztBook(Integer subjectId) {
         return baseMapper.ztBook(subjectId);
+    }
+    
+  
+    @Override
+    public List<BookVO> getBookListByCategoryId(Integer categoryId) {
+        List<Book> books = baseMapper.selectListByCategoryId(categoryId);
+        return BookConvert.INSTANCE.convert(books);
     }
 }

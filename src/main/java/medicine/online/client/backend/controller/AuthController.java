@@ -27,6 +27,13 @@ public class AuthController {
         return Result.ok(userService.weChatLogin(dto));
     }
 
+    @PostMapping("/loginByPhone")
+    @Operation(summary = "手机号登录")
+    public Result<UserLoginVO> loginByPhone (@RequestParam ("phone") String phone, @RequestParam("code") String code) {
+        return Result.ok(userService.loginByPhone(phone, code));
+
+    }
+
 
     @PostMapping("/bindPhone")
     @Operation(summary = "绑定手机号")
