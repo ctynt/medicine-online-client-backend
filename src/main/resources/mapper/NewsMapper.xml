@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybat
-is.org/dtd/mybatis-3-mapper.dtd">
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="medicine.online.client.backend.mapper.NewsMapper">
 
     <resultMap id="NewsResultMap" type="medicine.online.client.backend.model.vo.NewsVO">
@@ -10,6 +9,7 @@ is.org/dtd/mybatis-3-mapper.dtd">
         <result property="label" column="label"/>
         <result property="browseNum" column="browse_num"/>
         <result property="starNum" column="star_num"/>
+        <result property="createTime" column="create_time"/>
     </resultMap>
 
     <select id="indexPageNews" resultMap="NewsResultMap">
@@ -17,7 +17,7 @@ is.org/dtd/mybatis-3-mapper.dtd">
         FROM t_news tn
         JOIN t_index_content tic ON tn.pk_id = tic.content_id
         WHERE tn.state = 4 AND tic.type = 1 AND tic.category_id = 78
-        GROUP BY tn.pk_id, tn.title, tn.cover, tn.label, tn.browse_num, tn.star_num
+        GROUP BY tn.pk_id, tn.title, tn.cover, tn.label, tn.browse_num, tn.star_num,tn.create_time
         ORDER BY tn.create_time DESC
         LIMIT 18
     </select>
