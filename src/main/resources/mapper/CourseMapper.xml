@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicine.online.client.backend.mapper.CourseMapper">
+
+    <resultMap id="CourseMap" type="medicine.online.client.backend.model.vo.CourseVO">
+        <result property="pkId" column="pk_id" />
+        <result property="title" column="title"/>
+        <result property="cover" column="cover"/>
+        <result property="label" column="label"/>
+        <result property="browseNum" column="browse_num"/>
+        <result property="starNum" column="star_num"/>
+    </resultMap>
+
+    <select id="getsPageCourseList" resultMap="CourseMap">
+        SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
+        FROM t_course tc
+        WHERE  tc.state = 4
+    </select>
+
+</mapper>
