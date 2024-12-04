@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybat
+is.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicine.online.client.backend.mapper.PodcastMapper">
+
+    <resultMap id="PodcastResultMap" type="medicine.online.client.backend.model.vo.PodcastVO">
+        <result property="pkId" column="pk_id"/>
+        <result property="title" column="title"/>
+        <result property="label" column="label"/>
+        <result property="browseNum" column="browse_num"/>
+    </resultMap>
+
+    <select id="ztPodcast" resultMap="PodcastResultMap">
+        SELECT tp.pk_id, tp.title, tp.label, tp.browse_num
+        FROM t_podcast tp
+        JOIN t_subject_associated tsa ON tp.pk_id = tsa.content_id
+        JOIN t_subject ts ON tsa.subject_id = ts.pk_id
+        WHERE tsa.type = 4 AND tp.state = 4
+        AND tsa.subject_id = #{subjectId}
+        ORDER BY tp.pk_id DESC
+    </select>
+
+</mapper>
