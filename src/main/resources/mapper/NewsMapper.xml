@@ -38,4 +38,17 @@
         FROM t_news tn
         WHERE tn.pk_id = #{id} AND tn.state = 4
     </select>
+
+    <select id="getNewsByTitleLike" resultMap="NewsResultMap">
+        SELECT tn.pk_id, tn.title, tn.cover, tn.label, tn.browse_num, tn.star_num
+        FROM t_news tn
+        WHERE title LIKE '%${title}%'
+    </select>
+
+    <select id="isNewsPkIdExist" resultType="boolean">
+        SELECT COUNT(*) > 0 AS exists_flag
+        FROM t_index_content tic
+        WHERE tic.content_id = #{pkId}
+          AND tic.type = 1
+    </select>
 </mapper>

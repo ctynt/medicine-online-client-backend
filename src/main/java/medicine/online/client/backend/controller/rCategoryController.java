@@ -22,13 +22,13 @@ public class rCategoryController {
     private final rCategoryService rcategoryService;
 
     @GetMapping("/item/category")
-    @Operation(summary = "专题视频分类列表")
+    @Operation(summary = "视频分类列表")
     public Result<List<rCategoryVO>> queryByLevel() {
         return Result.ok(rcategoryService.getrCategoryList());
     }
 
     @GetMapping("/item/categorylist")
-    @Operation(summary = "专题视频分类子列表")
+    @Operation(summary = "视频分类子列表")
     public Result<List<rCategoryVO>> getrCategoryListByParentId(@RequestParam(required = false) Long parentId) {
         return Result.ok(rcategoryService.getrCategoryListByParentId(parentId));
     }

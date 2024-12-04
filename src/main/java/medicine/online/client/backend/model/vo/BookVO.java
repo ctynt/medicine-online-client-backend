@@ -17,4 +17,5 @@ public class BookVO {
 //    @Schema(description = "categoryId")
 //    private Integer categoryId;
 
+    private Integer leixing;
 }

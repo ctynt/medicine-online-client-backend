@@ -19,6 +19,5 @@ public class CourseVO {
     @Schema(description = "收藏量")
     private Integer starNum;
 
-    @Schema(description = "类型")
     private Integer leixing;
 }

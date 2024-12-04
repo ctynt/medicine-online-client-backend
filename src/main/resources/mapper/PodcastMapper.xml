@@ -19,4 +19,17 @@
         ORDER BY tp.pk_id DESC
     </select>
 
+    <select id="getPodcastByTitleLike" resultMap="PodcastResultMap">
+        SELECT tp.pk_id, tp.title, tp.label, tp.browse_num, tp.star_num
+        FROM t_podcast tp
+        WHERE title LIKE '%${title}%'
+          AND tp.state = 4
+    </select>
+
+    <select id="isPodcastPkIdExist" resultType="boolean">
+        SELECT COUNT(*) > 0 AS exists_flag
+        FROM t_index_content tic
+        WHERE tic.content_id = #{pkId}
+          AND tic.type = 3
+    </select>
 </mapper>

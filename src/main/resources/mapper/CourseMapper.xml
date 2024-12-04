@@ -27,4 +27,16 @@
         ORDER BY tc.sort
     </select>
 
+    <select id="getCourseByTitleLike" resultMap="CourseMap">
+        SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
+        FROM t_course tc
+        WHERE title LIKE '%${title}%'
+    </select>
+
+    <select id="isCoursePkIdExist" resultType="boolean">
+        SELECT COUNT(*) > 0 AS exists_flag
+        FROM t_index_content tic
+        WHERE tic.content_id = #{pkId}
+          AND tic.type = 2
+    </select>
 </mapper>
