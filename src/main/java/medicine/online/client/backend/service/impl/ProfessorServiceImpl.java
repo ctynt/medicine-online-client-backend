@@ -1,12 +1,15 @@
 package medicine.online.client.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.enums.TopicStatusEnum;
 import medicine.online.client.backend.mapper.*;
 import medicine.online.client.backend.model.entity.*;
+import medicine.online.client.backend.model.query.ProfessorQuery;
 import medicine.online.client.backend.model.vo.ProfessorDetailVO;
 import medicine.online.client.backend.model.vo.ProfessorVO;
 import medicine.online.client.backend.model.vo.TopicVO;
@@ -33,8 +36,10 @@ public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor
     private final TopicMapper topicMapper;
 
     @Override
-    public List<ProfessorVO> getProfessorList(Integer categoryId) {
-        return professorMapper.selectByCategoryId(categoryId);
+    public PageResult<ProfessorVO> getProfessorList(ProfessorQuery query) {
+        Page<ProfessorVO> page = new Page<>(query.getPage(),query.getLimit());
+        List<ProfessorVO> list = professorMapper.getProfessorPage(page, query);
+        return new PageResult<>(list, page.getTotal());
     }
 
     @Override

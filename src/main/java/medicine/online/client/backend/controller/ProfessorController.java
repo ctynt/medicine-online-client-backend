@@ -2,7 +2,9 @@ package medicine.online.client.backend.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.model.vo.ProfessorCategoryVO;
 import medicine.online.client.backend.model.query.ProfessorQuery;
@@ -29,8 +31,8 @@ public class ProfessorController {
 
     @PostMapping("/list")
     @Operation(summary = "专家列表")
-    public Result<List<ProfessorVO>> list(@RequestBody ProfessorQuery query) {
-        return Result.ok(professorService.getProfessorList(query.getCategoryId()));
+    public Result<PageResult<ProfessorVO>> list(@RequestBody @Valid ProfessorQuery query) {
+        return Result.ok(professorService.getProfessorList(query));
     }
 
     @PostMapping("/category")
