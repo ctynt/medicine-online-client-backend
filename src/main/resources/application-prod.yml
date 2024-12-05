@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    druid:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      url: jdbc:mysql://rm-gc7vz5fpb4ap2t5325o.mysql.cn-chengdu.rds.aliyuncs.com/medicine_online_1?useSSL=false&allowPublicKeyRetrieval=true&allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT%2B8
+      username: soft2213_group1
+      password: soft2213_group1
+      initial-size: 5
+      min-idle: 5
+      max-active: 20
+      max-wait: 30000
+  data:
+    redis:
+      host: 47.99.65.19
+      password: 123456
+      port: 6379
+      lettuce:
+        pool:
+          min-idle: 10
+          max-idle: 20
+          max-active: 100
