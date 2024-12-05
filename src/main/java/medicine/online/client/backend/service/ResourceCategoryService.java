@@ -13,5 +13,5 @@ import java.util.List;
  */
 
 public interface ResourceCategoryService extends IService<ResourceCategory> {
-    List<ResourceCategoryVO> getResourceCategoryTree();
+    List<ResourceCategoryVO> getResourceCategoryTree(Integer parentId);
 }
