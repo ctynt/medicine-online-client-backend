@@ -7,5 +7,5 @@
                 AND tp.category_id = #{query.categoryId}
             </if>
         ORDER BY tp.create_time DESC
-</select>
+    </select>
 </mapper>

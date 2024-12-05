@@ -15,4 +15,7 @@ public interface ProfessorService extends IService<Professor> {
 
     //根据id查询教授详情
     ProfessorDetailVO getProfessorDetail(Integer id);
+
+    //根据姓名查询教授列表
+    List<ProfessorVO> getProfessorListByName(String name);
 }

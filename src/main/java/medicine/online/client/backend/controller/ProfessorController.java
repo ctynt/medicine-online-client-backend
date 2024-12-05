@@ -47,5 +47,9 @@ public class ProfessorController {
         return Result.ok(professorService.getProfessorDetail(id));
     }
 
-
+    @PostMapping("/search")
+    @Operation(summary = "专家搜索")
+    public Result<List<ProfessorVO>> getListByName(@RequestParam String name) {
+        return Result.ok(professorService.getProfessorListByName(name));
+    }
 }

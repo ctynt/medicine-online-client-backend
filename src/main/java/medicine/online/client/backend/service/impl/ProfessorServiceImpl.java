@@ -89,4 +89,22 @@ public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor
         professorDetailVO.setList(topicVOS);
         return professorDetailVO;
     }
+
+    @Override
+    public List<ProfessorVO> getProfessorListByName(String name) {
+        LambdaQueryWrapper<Professor> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.like(Professor::getName, name);
+        List<Professor> professors = professorMapper.selectList(queryWrapper);
+        List<ProfessorVO> professorVOS = professors.stream().map(professor -> {
+            ProfessorVO professorVO = new ProfessorVO();
+            professorVO.setPkId(professor.getPkId());
+            professorVO.setName(professor.getName());
+            professorVO.setAvatar(professor.getAvatar());
+            professorVO.setProfession(professor.getProfession());
+            professorVO.setMajorField(professor.getMajorField());
+            professorVO.setBrief(professor.getBrief());
+            return professorVO;
+        }).collect(Collectors.toList());
+        return professorVOS;
+    }
 }
