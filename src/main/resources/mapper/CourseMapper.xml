@@ -47,6 +47,7 @@
                  JOIN t_resource_category trp ON tc.category_id = trp.pk_id
                  JOIN t_resource_category trc ON trp.parent_id = trc.pk_id
                  JOIN t_subject_label tsl ON JSON_CONTAINS(tsl.category_id, CAST(trc.pk_id AS JSON), '$')
+                 JOIN t_subject ts ON tsl.subject_id = ts.pk_id
         WHERE tsl.pk_id = #{videosId}
     </select>
 
