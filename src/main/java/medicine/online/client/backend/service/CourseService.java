@@ -14,8 +14,10 @@ public interface CourseService extends IService<Course> {
     // 获取分页上新视频列表方法
     PageResult<CourseVO> getsPageCourseList(Query query);
 
-    // 分页查询专题分类视频列表方法
+    // 分页查询专题分页视频列表方法
     PageResult<CourseVO> getPageCourseList(Query query, Integer categoryId);
 
+    // 分页查询专题分页视频集列表方法
+    PageResult<CourseVO> getPageVideosList(Query query, Integer videosId);
 
 }

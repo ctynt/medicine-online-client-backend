@@ -18,7 +18,7 @@ public interface CourseMapper extends BaseMapper<Course> {
     // 获取分页上新视频列表方法
     List<CourseVO> getsPageCourseList(Page<CourseVO> page, @Param("query") Query query);
 
-    // 获取分页专题分类列表方法
+    // 获取分页专题视频列表方法
     List<CourseVO> getPageCourseList(Page<CourseVO> page, @Param("query") Query query, Integer categoryId);
 
     // 模糊查询
@@ -27,5 +27,7 @@ public interface CourseMapper extends BaseMapper<Course> {
     // 新增方法用于判断pk_id是否存在于t_index_content表中
     boolean isCoursePkIdExist(Integer pkId);
 
+    // 获取分页专题视频集列表方法
+    List<CourseVO> getPageVideosList(Page<CourseVO> page, @Param("query") Query query, Integer videosId);
 
 }
