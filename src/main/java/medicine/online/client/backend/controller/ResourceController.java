@@ -55,7 +55,7 @@ public class ResourceController {
 
     @PostMapping("/category")
     @Operation(summary = "资源分类")
-    public Result<List<ResourceCategoryVO>> getResourceCategoryList(Integer parentId) {
+    public Result<List<ResourceCategoryVO>> getResourceCategoryList(@RequestParam(required = false) Integer parentId) {
         return Result.ok(resourceCategoryService.getResourceCategoryTree(parentId));
     }
 }
