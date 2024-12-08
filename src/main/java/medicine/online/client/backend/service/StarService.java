@@ -1,6 +1,7 @@
 package medicine.online.client.backend.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.servlet.http.HttpServletRequest;
 import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.model.dto.StarDTO;
 import medicine.online.client.backend.model.query.StarQuery;
@@ -19,7 +20,7 @@ public interface StarService {
      * @param collectionQuery 查询条件
      * @return 分页的收藏列表
      */
-    Page<StarVO> getCollectionList(StarQuery collectionQuery);
+    Page<StarVO> getCollectionList(Integer userId, StarQuery collectionQuery);
 
     /**
      * 添加收藏
@@ -27,7 +28,7 @@ public interface StarService {
      * @param starDTO 收藏信息
      * @return 是否成功
      */
-    boolean addCollection(StarDTO starDTO);
+    boolean addCollection(Integer userId, StarDTO starDTO);
 
     /**
      * 删除收藏
@@ -35,6 +36,6 @@ public interface StarService {
      * @param starDTO 收藏信息
      * @return 是否成功
      */
-    boolean deleteCollection(StarDTO starDTO);
+    boolean deleteCollection(Integer userId, StarDTO starDTO);
 
 }

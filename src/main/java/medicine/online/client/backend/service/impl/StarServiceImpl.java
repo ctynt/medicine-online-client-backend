@@ -1,10 +1,13 @@
 package medicine.online.client.backend.service.impl;
 
+import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.mapper.NewsMapper;
 import medicine.online.client.backend.mapper.StarMapper;
 import medicine.online.client.backend.model.dto.StarDTO;
@@ -13,10 +16,12 @@ import medicine.online.client.backend.model.entity.Star;
 import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
 import medicine.online.client.backend.service.StarService;
+import medicine.online.client.backend.utils.JwtUtil;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -35,9 +40,14 @@ public class StarServiceImpl implements StarService {
      * 查询用户的收藏列表（分页）
      */
     @Override
-    public Page<StarVO> getCollectionList(StarQuery collectionQuery) {
-        Integer userId = collectionQuery.getUserId();
+    public Page<StarVO> getCollectionList(Integer userId, StarQuery collectionQuery) {
+//        Integer userId = RequestContext.getUserId();
+
         // 获取用户ID
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
         Integer pageNum = collectionQuery.getPageNum();
         // 当前页
         Integer pageSize = collectionQuery.getPageSize();
@@ -86,9 +96,14 @@ public class StarServiceImpl implements StarService {
      * 添加收藏
      */
     @Override
-    public boolean addCollection(StarDTO starDTO) {
-        Integer userId = getCurrentUserId();
+    public boolean addCollection(Integer userId,StarDTO starDTO) {
+//        Integer userId = RequestContext.getUserId();
         // 获取当前用户ID
+
+        if (userId == null) {
+            log.error("User ID is null when adding collection");
+            return false;
+        }
 
         // 创建收藏记录
         Star star = new Star();
@@ -111,9 +126,14 @@ public class StarServiceImpl implements StarService {
      * 删除收藏
      */
     @Override
-    public boolean deleteCollection(StarDTO starDTO) {
-        Integer userId = getCurrentUserId();
-        // 获取当前用户ID
+    public boolean deleteCollection(Integer userId, StarDTO starDTO) {
+//        Integer userId = RequestContext.getUserId();
+     // 获取当前用户ID
+
+        if (userId == null) {
+            log.error("User ID is null when deleting collection");
+            return false;
+        }
 
         // 更新收藏记录的删除标志为 1（已删除）
         UpdateWrapper<Star> updateWrapper = new UpdateWrapper<>();
@@ -123,7 +143,7 @@ public class StarServiceImpl implements StarService {
                 .eq("delete_flag", 0)
                 // 只更新未删除的记录
                 .set("delete_flag", 1);
-                // 更新为已删除
+        // 更新为已删除
 
         // 执行更新操作
         int result = starMapper.update(null, updateWrapper);
@@ -134,9 +154,15 @@ public class StarServiceImpl implements StarService {
     /**
      * 获取当前用户ID（模拟获取用户ID，实际可根据用户会话或 JWT 获取）
      */
-    private Integer getCurrentUserId() {
-        // 返回当前用户ID，模拟获取
-        // 默认返回用户ID 1
-        return 1;
-    }
+//    private Integer getCurrentUserId() {
+//        try {
+//            return RequestContext.getUserId();
+//        } catch (IllegalArgumentException e) {
+//            log.error("Failed to get user ID from context: {}", e.getMessage());
+//            return null;
+//        }
+//    }
 }
+
+
+
