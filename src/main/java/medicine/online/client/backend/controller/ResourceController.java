@@ -16,11 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @Author ctynt
- * @Date 2024/12/3
- * @Description ResourceController
- */
 @Tag(name = "知识库模块")
 @RestController
 @RequestMapping("/resource")
@@ -43,8 +38,8 @@ public class ResourceController {
 
     @PostMapping("/book/list")
     @Operation(summary = "书本列表")
-    public Result<List<BookVO>> getList(Integer categoryId) {
-        return Result.ok(bookService.getBookListByCategoryId(categoryId));
+    public Result<List<BookVO>> getList(@RequestParam String categoryName) {
+        return Result.ok(bookService.getBookListByCategory(categoryName));
     }
 
     @PostMapping("/book/getBookChapterList/{bookId}")
@@ -55,7 +50,7 @@ public class ResourceController {
 
     @PostMapping("/category")
     @Operation(summary = "资源分类")
-    public Result<List<ResourceCategoryVO>> getResourceCategoryList(@RequestParam(required = false) Integer parentId) {
+    public Result<List<ResourceCategoryVO>> getResourceCategoryList(@RequestParam Integer parentId) {
         return Result.ok(resourceCategoryService.getResourceCategoryTree(parentId));
     }
 }
