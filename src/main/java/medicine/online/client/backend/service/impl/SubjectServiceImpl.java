@@ -22,6 +22,11 @@ public class SubjectServiceImpl extends ServiceImpl<SubjectMapper, Subject> impl
     }
 
     @Override
+    public List<SubjectVO> getSubjectList0() {
+        return baseMapper.getSubjectList0();
+    }
+
+    @Override
     public SubjectVO getSubjectDetail(Integer id) {
         return baseMapper.getSubjectDetail(id);
     }
