@@ -29,4 +29,19 @@
 <!--        AND ts.type = 0-->
     </select>
 
+    <select id="getSubjectByTitleLike" resultMap="SubjectResultMap">
+        SELECT ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
+        FROM t_subject ts
+        WHERE title LIKE '%${title}%'
+    </select>
+
+    <select id="isSubjectPkIdExist" resultType="boolean">
+        SELECT COUNT(*) > 0 AS exists_flag
+        FROM t_index_content tic
+                 JOIN t_subject ON tic.content_id = t_subject.pk_id
+        WHERE tic.content_id = #{pkId}
+          AND t_subject.type = 0
+          AND tic.type = 0
+    </select>
+
 </mapper>

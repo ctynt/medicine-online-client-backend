@@ -40,4 +40,5 @@ public class Subject implements Serializable {
     private LocalDateTime endTime;
     private Integer type;
 
+
 }

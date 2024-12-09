@@ -26,10 +26,15 @@ public class CourseController {
         return Result.ok(courseService.getsPageCourseList(query));
     }
 
-    @PostMapping("item/courseList/{categoryId}")
+    @PostMapping("/item/courseList/{categoryId}")
     @Operation(summary = "专题分页视频列表")
     public Result<PageResult<CourseVO>> page(@RequestBody @Valid Query query, @PathVariable Integer categoryId) {
         return Result.ok(courseService.getPageCourseList(query, categoryId));
     }
 
+    @PostMapping("/item/videos/{videosId}")
+    @Operation(summary = "专题分页视频集列表")
+    public Result<PageResult<CourseVO>> getPageVideosList(@RequestBody @Valid Query query, @PathVariable Integer videosId) {
+        return Result.ok(courseService.getPageVideosList(query, videosId));
+    }
 }

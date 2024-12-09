@@ -33,4 +33,5 @@ public class News implements Serializable  {
     private LocalDateTime updateTime;
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
 }

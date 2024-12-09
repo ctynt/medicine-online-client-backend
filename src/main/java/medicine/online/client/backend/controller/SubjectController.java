@@ -7,9 +7,11 @@ import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.model.vo.BookVO;
 import medicine.online.client.backend.model.vo.PodcastVO;
+import medicine.online.client.backend.model.vo.SubjectLabelVO;
 import medicine.online.client.backend.model.vo.SubjectVO;
 import medicine.online.client.backend.service.BookService;
 import medicine.online.client.backend.service.PodcastService;
+import medicine.online.client.backend.service.SubjectLabelService;
 import medicine.online.client.backend.service.SubjectService;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,5 +50,13 @@ public class SubjectController {
     @Operation(summary = "专题音频列表")
     public Result<List<PodcastVO>> ztPodcast(@RequestParam Integer subjectId) {
         return Result.ok(podcastService.ztPodcast(subjectId));
+    }
+
+    private final SubjectLabelService subjectLabelService;
+
+    @GetMapping("/videosList")
+    @Operation(summary = "专题视频集列表")
+    public Result<List<SubjectLabelVO>> getSubjectLabelList(@RequestParam Integer subjectId) {
+        return Result.ok(subjectLabelService.getSubjectLabelList(subjectId));
     }
 }

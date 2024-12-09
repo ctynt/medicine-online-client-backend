@@ -32,4 +32,6 @@ public class SubjectVO {
 
     @Schema(description = "类型")
     private Integer type;
+
+    private Integer leixing;
 }

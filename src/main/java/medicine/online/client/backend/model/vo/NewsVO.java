@@ -34,4 +34,6 @@ public class NewsVO {
 
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
+
+    private Integer leixing;
 }

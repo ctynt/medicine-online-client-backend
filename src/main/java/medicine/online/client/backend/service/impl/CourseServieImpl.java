@@ -37,5 +37,12 @@ public class CourseServieImpl extends ServiceImpl<CourseMapper, Course> implemen
         return new PageResult<>(list, page.getTotal());
     }
 
+    // 专题视频集
+    @Override
+    public PageResult<CourseVO> getPageVideosList(Query query, Integer videosId) {
+        Page<CourseVO> page = new Page<>(query.getPage(), query.getLimit());
+        List<CourseVO> list = baseMapper.getPageVideosList(page, query, videosId);
+        return new PageResult<>(list, page.getTotal());
+    }
 
 }

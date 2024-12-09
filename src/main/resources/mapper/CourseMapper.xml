@@ -18,7 +18,7 @@
         WHERE  tc.state = 4
     </select>
 
-<!--    专题视频-->
+    <!-- 专题视频 -->
     <select id="getPageCourseList" resultMap="CourseMap">
         SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
         FROM t_course tc
@@ -26,5 +26,30 @@
         WHERE tc.state = 4 AND tc.category_id = #{categoryId}
         ORDER BY tc.sort
     </select>
+
+    <select id="getCourseByTitleLike" resultMap="CourseMap">
+        SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
+        FROM t_course tc
+        WHERE title LIKE '%${title}%'
+    </select>
+
+    <select id="isCoursePkIdExist" resultType="boolean">
+        SELECT COUNT(*) > 0 AS exists_flag
+        FROM t_index_content tic
+        WHERE tic.content_id = #{pkId}
+          AND tic.type = 2
+    </select>
+
+    <!-- 专题分页视频集列表 -->
+    <select id="getPageVideosList" resultMap="CourseMap">
+        SELECT tc.*
+        FROM t_course tc
+                 JOIN t_resource_category trp ON tc.category_id = trp.pk_id
+                 JOIN t_resource_category trc ON trp.parent_id = trc.pk_id
+                 JOIN t_subject_label tsl ON JSON_CONTAINS(tsl.category_id, CAST(trc.pk_id AS JSON), '$')
+                 JOIN t_subject ts ON tsl.subject_id = ts.pk_id
+        WHERE tsl.pk_id = #{videosId}
+    </select>
+
 
 </mapper>
