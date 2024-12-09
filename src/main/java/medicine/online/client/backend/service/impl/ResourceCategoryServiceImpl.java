@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @Author ctynt
@@ -25,49 +26,38 @@ import java.util.List;
 @Service
 @AllArgsConstructor
 public class ResourceCategoryServiceImpl extends ServiceImpl<ResourceCategoryMapper, ResourceCategory> implements ResourceCategoryService {
+
     @Override
-    public List<ResourceCategoryVO> getResourceCategoryTree() {
-        // 获取树形结构数据，返回的是 ResourceCategoryVO 列表
-        List<ResourceCategoryVO> treeList = TreeUtils.build(ResourceCategoryConvert.INSTANCE.convertToList(baseMapper.selectList(null)), Constant.ROOT);
+    public List<ResourceCategoryVO> getResourceCategoryTree(Integer parentId) {
+        // 获取所有的分类数据（假设 ResourceCategory 表中有 parentId 字段）
+        List<ResourceCategoryVO> allCategories = ResourceCategoryConvert.INSTANCE.convertToList(baseMapper.selectList(null));
 
-        // 根节点，直接加入列表
-        List<ResourceCategoryVO> resultList = new ArrayList<>();
-        ResourceCategoryVO rootCategory = new ResourceCategoryVO();
-        rootCategory.setPkId(0);
-        rootCategory.setTitle("根节点");
-        resultList.add(rootCategory);
+        // 获取父节点为指定 parentId 的所有节点
+        List<ResourceCategoryVO> rootCategories = allCategories.stream()
+                .filter(category -> category.getParentId().equals(parentId)) // 根据 parentId 查询当前节点
+                .collect(Collectors.toList());
 
-        // 遍历树形结构，递归处理子节点，进行排序并添加缩进
-        for (ResourceCategoryVO menu : treeList) {
-            addNodeWithIndent(menu, resultList, 1);
+        // 遍历当前父节点，递归获取每个节点的子节点
+        for (ResourceCategoryVO rootCategory : rootCategories) {
+            buildCategoryTree(rootCategory, allCategories);
         }
 
-        return resultList;
+        return rootCategories;
     }
 
-    /**
-     * 递归地为树节点添加缩进并加入到结果列表中
-     * @param node 当前节点
-     * @param resultList 结果列表
-     * @param level 当前层级
-     */
-    private void addNodeWithIndent(ResourceCategoryVO node, List<ResourceCategoryVO> resultList, int level) {
-        // 为当前节点设置缩进
-        node.setTitle("      ".repeat(level) + node.getTitle());
-        resultList.add(node);
+    // 递归构建树形结构
+    private void buildCategoryTree(ResourceCategoryVO parentCategory, List<ResourceCategoryVO> allCategories) {
+        List<ResourceCategoryVO> children = allCategories.stream()
+                .filter(category -> category.getParentId().equals(parentCategory.getPkId())) // 根据 parentId 获取子节点
+                .collect(Collectors.toList());
 
-        // 如果当前节点有子节点，先排序然后递归处理子节点
-        if (node.getChildren() != null && !node.getChildren().isEmpty()) {
-            // 按照 sort 字段进行排序
-            node.getChildren().sort(Comparator.comparingInt(ResourceCategoryVO::getSort));
-
-            // 递归处理下一层级的子节点
-            for (ResourceCategoryVO child : node.getChildren()) {
-                addNodeWithIndent(child, resultList, level + 1); // 递归处理下一层级
+        if (!children.isEmpty()) {
+            // 设置子节点
+            parentCategory.setChildren(children);
+            // 递归处理子节点的子节点
+            for (ResourceCategoryVO child : children) {
+                buildCategoryTree(child, allCategories);
             }
         }
     }
-
-
 }
-
