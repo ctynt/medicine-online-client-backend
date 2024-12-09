@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicine.online.client.backend.mapper.CourseVideoMapper">
+
+    <resultMap id="CourseVideoResultMap" type="medicine.online.client.backend.model.vo.CourseVideoVO">
+        <result property="pkId" column="pk_id"/>
+        <result property="courseId" column="course_id"/>
+        <result property="title" column="title"/>
+        <result property="url" column="url"/>
+    </resultMap>
+
+    <select id="getCourseVideoDetail" resultMap="CourseVideoResultMap">
+        SELECT tcv.pk_id, tcv.course_id, tcv.title, tcv.url, tc.brief
+        FROM t_course_video tcv
+        JOIN t_course tc ON  tcv.course_id = tc.pk_id
+        WHERE tcv.course_id = #{Id}
+
+    </select>
+
+</mapper>

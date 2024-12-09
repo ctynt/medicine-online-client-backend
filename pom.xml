@@ -117,7 +117,7 @@
         </dependency>
     </dependencies>
     <build>
-        <finalName>share-app-api</finalName>
+        <finalName>medicine-online-client-backend</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

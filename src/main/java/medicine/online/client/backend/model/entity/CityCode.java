@@ -3,8 +3,6 @@ package medicine.online.client.backend.model.entity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
-import java.time.LocalDateTime;
-
 /**
  * @Author ctynt
  * @Date 2024/11/27
@@ -21,10 +19,4 @@ public class CityCode {
     private String name;
     private Integer parentCode;
     private Integer level;
-
-    @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
-    private LocalDateTime updateTime;
-
-    @TableField(value = "create_time", fill = FieldFill.INSERT)
-    private LocalDateTime createTime;
 }
