@@ -17,4 +17,8 @@ public class BookVO {
     private String title;
     @Schema(description = "封面")
     private String cover;
+    @Schema(description = "浏览量")
+    private Integer browseNum;
+    @Schema(description = "书籍url")
+    private String url;
 }

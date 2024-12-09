@@ -43,8 +43,8 @@ public class ResourceController {
 
     @PostMapping("/book/list")
     @Operation(summary = "书本列表")
-    public Result<List<BookVO>> getList(Integer categoryId) {
-        return Result.ok(bookService.getBookListByCategoryId(categoryId));
+    public Result<List<BookVO>> getList(@RequestParam String categoryName) {
+        return Result.ok(bookService.getBookListByCategory(categoryName));
     }
 
     @PostMapping("/book/getBookChapterList/{bookId}")
@@ -55,7 +55,7 @@ public class ResourceController {
 
     @PostMapping("/category")
     @Operation(summary = "资源分类")
-    public Result<List<ResourceCategoryVO>> getResourceCategoryList(Integer parentId) {
+    public Result<List<ResourceCategoryVO>> getResourceCategoryList(@RequestParam Integer parentId) {
         return Result.ok(resourceCategoryService.getResourceCategoryTree(parentId));
     }
 }

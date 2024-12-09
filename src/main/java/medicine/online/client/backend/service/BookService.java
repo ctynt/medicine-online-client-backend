@@ -13,5 +13,5 @@ import java.util.List;
  */
 
 public interface BookService extends IService<Book> {
-    List<BookVO> getBookListByCategoryId(Integer categoryId);
+    List<BookVO> getBookListByCategory(String categoryName);
 }
