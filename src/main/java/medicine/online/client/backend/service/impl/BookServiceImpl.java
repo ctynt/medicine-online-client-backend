@@ -13,11 +13,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-/**
- * @Author ctynt
- * @Date 2024/12/3
- * @Description BookServiceImpl
- */
 @Slf4j
 @Service
 @AllArgsConstructor
@@ -29,4 +24,10 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
         log.info(books.toString());
         return BookConvert.INSTANCE.convert(books);
     }
+  
+    @Override
+    public List<BookVO> ztBook(Integer subjectId) {
+        return baseMapper.ztBook(subjectId);
+    }
+    
 }

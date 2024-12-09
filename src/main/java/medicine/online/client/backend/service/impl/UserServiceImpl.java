@@ -73,6 +73,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             user.setProvince(876);
             user.setCity(877);
             user.setArea(878);
+            user.setPhone(phone);
 
             Student student = new Student();
             student.setCityCode(320101);
@@ -81,6 +82,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
             student.setIsTest(0);
             student.setAge(20);
             student.setProfessionId(121);
+            student.setPhone(phone);
             studentMapper.insert(student);
             user.setRoleId(student.getPkId());
             baseMapper.insert(user);

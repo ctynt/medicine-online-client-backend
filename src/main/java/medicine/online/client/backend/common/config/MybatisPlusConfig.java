@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @EnableTransactionManagement
 @Configuration
-@MapperScan("medicine.online.client.backend.mapper")
+//@MapperScan("medicine.online.client.backend.mapper")
 public class MybatisPlusConfig {
     /**
      * 新的分⻚插件,⼀缓和⼆缓遵循mybatis的规则,需要设置 MybatisConfiguration#us

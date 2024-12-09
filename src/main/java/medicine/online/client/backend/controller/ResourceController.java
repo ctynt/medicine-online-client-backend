@@ -16,11 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @Author ctynt
- * @Date 2024/12/3
- * @Description ResourceController
- */
 @Tag(name = "知识库模块")
 @RestController
 @RequestMapping("/resource")

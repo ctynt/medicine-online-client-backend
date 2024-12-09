@@ -5,23 +5,26 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 
+/**
+ * @author WangL
+ */
 @Data
-@TableName("t_book")
-public class Book {
+@TableName("t_user_star")
+public class Star {
+
     @TableId(value = "pk_id", type = IdType.AUTO)
     private Integer pkId;
-    private Integer categoryId;
-    private String title;
-    private String cover;
-    private String titleEn;
-    private Integer state;
-    private Integer managerId;
-    private String sort;
-    private Integer totalPage;
+
+    private Integer userId;
+    private Integer type;
+    private Integer contentId;
+
+    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
+    private Integer deleteFlag;
+
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
-    private Integer browseNum;
-    private String url;
 }

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicine.online.client.backend.mapper.SubjectLabelMapper">
+
+    <select id="getSubjectLabelList" resultType="medicine.online.client.backend.model.vo.SubjectLabelVO">
+        SELECT tsl.*
+        FROM t_subject_label tsl
+        JOIN t_subject ts ON tsl.subject_id = ts.pk_id
+        WHERE tsl.subject_id = #{subjectId}
+    </select>
+
+</mapper>
