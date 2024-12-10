@@ -12,7 +12,9 @@ import medicine.online.client.backend.service.ProfessorService;
 import medicine.online.client.backend.service.TopicService;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +28,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements TopicService{
     private final TopicMapper topicMapper;
+    private final TopicReplyMapper topicReplyMapper;
     private final ProfessorService professorService;
     private final UserMapper userMapper;
     private final ProfessorCategoryMapper professorCategoryMapper;
@@ -34,11 +37,6 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
 
     @Override
     public List<TopicVO> getTopicList(Integer id) {
-
-        // 获取用户ID
-        if (id == null) {
-            throw new IllegalArgumentException("User ID cannot be null");
-        }
         // 根据教授ID查询相关的Topic
         List<Topic> topics = topicMapper.selectList(new LambdaQueryWrapper<Topic>()
                 .eq(Topic::getProfessorId,id)
@@ -74,6 +72,31 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
             topicVO.setTag(category.getName() + " " + studentProfession.getName());
             topicVO.setImg(topic.getImg());
             return topicVO;
+        }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<Map<String, Object>> getTopicReplyList(Integer id) {
+        // 根据 Topic ID 查询相关的 TopicReply
+        List<TopicReply> replies = topicReplyMapper.selectList(new LambdaQueryWrapper<TopicReply>()
+                .eq(TopicReply::getTopicId, id)
+                .eq(TopicReply::getDeleteFlag, 0));
+        // 排除已删除的记录
+
+        // 构造返回数据
+        return replies.stream().map(reply -> {
+            // 查询用户信息
+            User user = userMapper.selectById(reply.getUserId());
+
+            // 构造返回的 Map 数据结构
+            Map<String, Object> replyData = new HashMap<>();
+            replyData.put("avatar", user != null ? user.getAvatar() : "");
+            replyData.put("content", reply.getContent());
+            replyData.put("name", user != null ? user.getNickname() : "未知用户");
+            replyData.put("img", reply.getImg());
+            replyData.put("createTime", reply.getCreateTime());
+
+            return replyData;
         }).collect(Collectors.toList());
     }
 }

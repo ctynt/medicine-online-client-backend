@@ -17,6 +17,7 @@ import medicine.online.client.backend.service.TopicService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: orange
@@ -60,5 +61,11 @@ public class ProfessorController {
     @Operation(summary = "专家问答列表")
     public Result<List<TopicVO>> getTopicList(@PathVariable Integer id) {
         return Result.ok(topicService.getTopicList(id));
+    }
+
+    @PostMapping("/replyList/{id}")
+    @Operation(summary = "回复列表")
+    public Result<List<Map<String, Object>>> getTopicReplyList(@PathVariable Integer id) {
+        return Result.ok(topicService.getTopicReplyList(id));
     }
 }
