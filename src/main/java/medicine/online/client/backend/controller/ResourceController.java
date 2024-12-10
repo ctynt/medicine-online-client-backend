@@ -4,14 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.Result;
-import medicine.online.client.backend.model.vo.BookCategoryVO;
-import medicine.online.client.backend.model.vo.BookChapterVO;
-import medicine.online.client.backend.model.vo.BookVO;
-import medicine.online.client.backend.model.vo.ResourceCategoryVO;
-import medicine.online.client.backend.service.BookCategoryService;
-import medicine.online.client.backend.service.BookChapterService;
-import medicine.online.client.backend.service.BookService;
-import medicine.online.client.backend.service.ResourceCategoryService;
+import medicine.online.client.backend.model.vo.*;
+import medicine.online.client.backend.service.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -29,6 +23,8 @@ public class ResourceController {
     private final BookChapterService bookChapterService;
 
     private final ResourceCategoryService resourceCategoryService;
+
+    private final CourseService courseService;
 
     @PostMapping("/book/category")
     @Operation(summary = "书本分类")
@@ -52,5 +48,11 @@ public class ResourceController {
     @Operation(summary = "资源分类")
     public Result<List<ResourceCategoryVO>> getResourceCategoryList(@RequestParam Integer parentId) {
         return Result.ok(resourceCategoryService.getResourceCategoryTree(parentId));
+    }
+
+    @PostMapping("/video/list")
+    @Operation(summary = "视频列表")
+    public Result<List<CourseVO>> getCourseList(@RequestParam Integer categoryId) {
+        return Result.ok(courseService.getCourseList(categoryId));
     }
 }
