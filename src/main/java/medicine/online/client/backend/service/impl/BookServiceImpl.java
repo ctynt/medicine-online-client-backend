@@ -27,8 +27,15 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
             return new ArrayList<>();
         }
         List<Book> books = baseMapper.selectListByCategoryId(bookCategory.getPkId());
-        log.info(books.toString());
-        return BookConvert.INSTANCE.convert(books);
+        List<BookVO> bookVOList = BookConvert.INSTANCE.convert(books);
+        for (BookVO bookVO : bookVOList) {
+            String cover = bookVO.getCover();
+            if (cover != null && !cover.startsWith("https://")) {
+                cover = "https://medicineonline.oss-cn-hangzhou.aliyuncs.com/" + cover; // 如果没有 https 前缀，则添加 https
+            }
+            bookVO.setCover(cover);
+        }
+        return bookVOList;
     }
   
     @Override

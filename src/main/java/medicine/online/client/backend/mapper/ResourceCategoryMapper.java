@@ -11,7 +11,4 @@ import medicine.online.client.backend.model.entity.ResourceCategory;
  */
 
 public interface ResourceCategoryMapper extends BaseMapper<ResourceCategory> {
-    default ResourceCategory getResourceCategory(String categoryName) {
-        return this.selectOne(new LambdaQueryWrapper<ResourceCategory>().eq(ResourceCategory::getTitle, categoryName));
-    }
 }
