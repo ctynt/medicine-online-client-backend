@@ -52,7 +52,7 @@ public class ResourceController {
 
     @PostMapping("/video/list")
     @Operation(summary = "视频列表")
-    public Result<List<CourseVO>> getCourseList(@RequestParam String categoryName) {
-        return Result.ok(courseService.getCourseList(categoryName));
+    public Result<List<CourseVO>> getCourseList(@RequestParam Integer categoryId) {
+        return Result.ok(courseService.getCourseList(categoryId));
     }
 }

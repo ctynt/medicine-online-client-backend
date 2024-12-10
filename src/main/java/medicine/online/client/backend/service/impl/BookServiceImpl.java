@@ -7,10 +7,12 @@ import medicine.online.client.backend.convert.BookConvert;
 import medicine.online.client.backend.mapper.BookCategoryMapper;
 import medicine.online.client.backend.mapper.BookMapper;
 import medicine.online.client.backend.model.entity.Book;
+import medicine.online.client.backend.model.entity.BookCategory;
 import medicine.online.client.backend.model.vo.BookVO;
 import medicine.online.client.backend.service.BookService;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -20,7 +22,11 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
     private final BookCategoryMapper bookCategoryMapper;
     @Override
     public List<BookVO> getBookListByCategory(String categoryName) {
-        List<Book> books = baseMapper.selectListByCategoryId(bookCategoryMapper.getCategoryId(categoryName).getPkId());
+        BookCategory bookCategory = bookCategoryMapper.getCategoryId(categoryName);
+        if (bookCategory == null) {
+            return new ArrayList<>();
+        }
+        List<Book> books = baseMapper.selectListByCategoryId(bookCategory.getPkId());
         log.info(books.toString());
         return BookConvert.INSTANCE.convert(books);
     }
