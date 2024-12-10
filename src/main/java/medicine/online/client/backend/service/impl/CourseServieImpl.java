@@ -28,14 +28,27 @@ import java.util.List;
 @AllArgsConstructor
 public class CourseServieImpl extends ServiceImpl<CourseMapper, Course> implements CourseService {
 
-    private final ResourceCategoryMapper resourceCategoryMapper;
     private final CourseVideoMapper courseVideoMapper;
+    private final String front = "https://medicineonline.oss-cn-hangzhou.aliyuncs.com/";
 
-    // 上新视频
     @Override
     public PageResult<CourseVO> getsPageCourseList(Query query) {
         Page<CourseVO> page = new Page<>(query.getPage(), query.getLimit());
         List<CourseVO> list = baseMapper.getsPageCourseList(page, query);
+        // 处理 cover 和 url 字段
+        for (CourseVO courseVO : list) {
+            // 处理 cover 图片前缀
+            String cover = courseVO.getCover();
+            if (cover != null && !cover.startsWith("https://")) {
+                courseVO.setCover(front + cover);
+            }
+
+            // 处理 url 前缀
+            String url = courseVO.getUrl();
+            if (url != null && !url.startsWith("https://")) {
+                courseVO.setUrl(front + url);
+            }
+        }
         return new PageResult<>(list, page.getTotal());
     }
 
@@ -44,6 +57,20 @@ public class CourseServieImpl extends ServiceImpl<CourseMapper, Course> implemen
     public PageResult<CourseVO> getPageCourseList(Query query, Integer categoryId) {
         Page<CourseVO> page = new Page<>(query.getPage(), query.getLimit());
         List<CourseVO> list = baseMapper.getPageCourseList(page, query, categoryId);
+        // 处理 cover 和 url 字段
+        for (CourseVO courseVO : list) {
+            // 处理 cover 图片前缀
+            String cover = courseVO.getCover();
+            if (cover != null && !cover.startsWith("https://")) {
+                courseVO.setCover(front + cover);
+            }
+
+            // 处理 url 前缀
+            String url = courseVO.getUrl();
+            if (url != null && !url.startsWith("https://")) {
+                courseVO.setUrl(front + url);
+            }
+        }
         return new PageResult<>(list, page.getTotal());
     }
 
@@ -52,8 +79,23 @@ public class CourseServieImpl extends ServiceImpl<CourseMapper, Course> implemen
     public PageResult<CourseVO> getPageVideosList(Query query, Integer videosId) {
         Page<CourseVO> page = new Page<>(query.getPage(), query.getLimit());
         List<CourseVO> list = baseMapper.getPageVideosList(page, query, videosId);
+        // 处理 cover 和 url 字段
+        for (CourseVO courseVO : list) {
+            // 处理 cover 图片前缀
+            String cover = courseVO.getCover();
+            if (cover != null && !cover.startsWith("https://")) {
+                courseVO.setCover(front + cover);
+            }
+
+            // 处理 url 前缀
+            String url = courseVO.getUrl();
+            if (url != null && !url.startsWith("https://")) {
+                courseVO.setUrl(front + url);
+            }
+        }
         return new PageResult<>(list, page.getTotal());
     }
+
 
     @Override
     public List<CourseVO> getCourseList(Integer categoryId) {
@@ -65,10 +107,19 @@ public class CourseServieImpl extends ServiceImpl<CourseMapper, Course> implemen
         for (CourseVO courseVO : courseVOList) {
             CourseVideo courseVideo = courseVideoMapper.getByCourseId(courseVO.getPkId());
             if (courseVideo != null) {
-                courseVO.setUrl(courseVideo.getUrl());
+                String url = courseVideo.getUrl();
+                if (url != null && !url.startsWith("https://")) {
+                    url = front + url; // 如果没有 https 前缀，则添加 https
+                }
+                courseVO.setUrl(url);
             } else {
                 courseVO.setUrl(null);
             }
+            String cover = courseVO.getCover();
+            if (cover != null && !cover.startsWith("https://")) {
+                cover = front + cover; // 如果没有 https 前缀，则添加 https
+            }
+            courseVO.setCover(cover);
         }
 
         return courseVOList;

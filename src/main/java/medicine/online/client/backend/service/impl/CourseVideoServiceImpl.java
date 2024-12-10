@@ -17,6 +17,18 @@ public class CourseVideoServiceImpl extends ServiceImpl<CourseVideoMapper, Cours
 
     @Override
     public CourseVideoVO getCourseVideoDetail(Integer id) {
-        return baseMapper.getCourseVideoDetail(id);
+        // 获取视频详情
+        CourseVideoVO courseVideoVO = baseMapper.getCourseVideoDetail(id);
+
+        // 判断url字段，如果为空或不包含https前缀，补充https://
+        if (courseVideoVO != null && courseVideoVO.getUrl() != null) {
+            String url = courseVideoVO.getUrl();
+            if (!url.startsWith("https://")) {
+                courseVideoVO.setUrl("https://medicineonline.oss-cn-hangzhou.aliyuncs.com/" + url);  // 自动加上https://前缀
+            }
+        }
+
+        return courseVideoVO;
     }
+
 }
