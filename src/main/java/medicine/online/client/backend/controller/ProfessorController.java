@@ -10,8 +10,10 @@ import medicine.online.client.backend.model.vo.ProfessorCategoryVO;
 import medicine.online.client.backend.model.query.ProfessorQuery;
 import medicine.online.client.backend.model.vo.ProfessorDetailVO;
 import medicine.online.client.backend.model.vo.ProfessorVO;
+import medicine.online.client.backend.model.vo.TopicVO;
 import medicine.online.client.backend.service.ProfessorCategoryService;
 import medicine.online.client.backend.service.ProfessorService;
+import medicine.online.client.backend.service.TopicService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProfessorController {
     private final ProfessorService professorService;
+    private final TopicService topicService;
     private final ProfessorCategoryService professorCategoryService;
 
     @PostMapping("/list")
@@ -51,5 +54,11 @@ public class ProfessorController {
     @Operation(summary = "专家搜索")
     public Result<List<ProfessorVO>> getListByName(@RequestParam String name) {
         return Result.ok(professorService.getProfessorListByName(name));
+    }
+
+    @PostMapping("/topicList/{id}")
+    @Operation(summary = "专家问答列表")
+    public Result<List<TopicVO>> getTopicList(@PathVariable Integer id) {
+        return Result.ok(topicService.getTopicList(id));
     }
 }
