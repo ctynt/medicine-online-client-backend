@@ -6,12 +6,15 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import medicine.online.client.backend.enums.TopicStatusEnum;
 import medicine.online.client.backend.mapper.*;
+import medicine.online.client.backend.model.dto.InsertDTO;
 import medicine.online.client.backend.model.entity.*;
+import medicine.online.client.backend.model.vo.InsertVO;
 import medicine.online.client.backend.model.vo.TopicVO;
 import medicine.online.client.backend.service.ProfessorService;
 import medicine.online.client.backend.service.TopicService;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +80,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
 
     @Override
     public List<Map<String, Object>> getTopicReplyList(Integer id) {
-        // 根据 Topic ID 查询相关的 TopicReply
+        // 根据 TopicID 查询相关的 TopicReply
         List<TopicReply> replies = topicReplyMapper.selectList(new LambdaQueryWrapper<TopicReply>()
                 .eq(TopicReply::getTopicId, id)
                 .eq(TopicReply::getDeleteFlag, 0));
@@ -99,4 +102,60 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
             return replyData;
         }).collect(Collectors.toList());
     }
+
+    @Override
+    public InsertVO submitQuestion(InsertDTO submitQuestionDTO) {
+        Integer userId = submitQuestionDTO.getUserId();
+        Integer professorId = submitQuestionDTO.getProfessorId();
+        String content = submitQuestionDTO.getContent();
+        String img = submitQuestionDTO.getImg();
+
+        // 校验用户是否存在
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new IllegalArgumentException("用户不存在");
+        }
+
+        // 校验教授是否存在
+        Professor professor = professorService.getById(professorId);
+        if (professor == null) {
+            throw new IllegalArgumentException("教授不存在");
+        }
+
+        // 校验问题内容是否为空
+        if (content == null || content.isEmpty()) {
+            throw new IllegalArgumentException("问题内容不能为空");
+        }
+
+        // 创建新的 Topic 实体对象
+        Topic topic = new Topic();
+        topic.setUserId(userId);
+        topic.setProfessorId(professorId);
+        topic.setContent(content);
+        topic.setImg(img);
+        // img 可为空
+        topic.setStatus(0);
+        // 2不予回答，1已回答，0未回答，默认为0
+        topic.setRemark("");
+        // 默认为空
+        topic.setJudgeStatus(2);
+        // 默认为 2
+        topic.setDeleteFlag(0);
+        // 默认未删除
+        topic.setCreateTime(LocalDateTime.now());
+        topic.setUpdateTime(LocalDateTime.now());
+
+        // 插入数据到数据库
+        topicMapper.insert(topic);
+
+        // 构造返回结果 VO
+        InsertVO responseVO = new InsertVO();
+        responseVO.setTopicId(topic.getPkId());
+        responseVO.setMessage("提问成功");
+
+        return responseVO;
+    }
+
+
+
 }

@@ -3,14 +3,13 @@ package medicine.online.client.backend.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.common.result.Result;
-import medicine.online.client.backend.model.vo.ProfessorCategoryVO;
+import medicine.online.client.backend.model.dto.InsertDTO;
+import medicine.online.client.backend.model.vo.*;
 import medicine.online.client.backend.model.query.ProfessorQuery;
-import medicine.online.client.backend.model.vo.ProfessorDetailVO;
-import medicine.online.client.backend.model.vo.ProfessorVO;
-import medicine.online.client.backend.model.vo.TopicVO;
 import medicine.online.client.backend.service.ProfessorCategoryService;
 import medicine.online.client.backend.service.ProfessorService;
 import medicine.online.client.backend.service.TopicService;
@@ -67,5 +66,12 @@ public class ProfessorController {
     @Operation(summary = "回复列表")
     public Result<List<Map<String, Object>>> getTopicReplyList(@PathVariable Integer id) {
         return Result.ok(topicService.getTopicReplyList(id));
+    }
+
+    @PostMapping("/insert")
+    @Operation(summary = "发起提问")
+    public Result<InsertVO> submitQuestion(@RequestBody @Valid InsertDTO submitQuestionDTO) {
+        // 调用 Service 层处理逻辑
+        return Result.ok(topicService.submitQuestion(submitQuestionDTO));
     }
 }
