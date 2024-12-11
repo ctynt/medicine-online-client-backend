@@ -12,4 +12,6 @@ public interface PodcastService extends IService<Podcast> {
 
     // 定义获取专题音频列表方法
     List<PodcastVO> ztPodcast(@Param("subjectId") Integer subjectId);
+
+    List<PodcastVO> getPodcastByCategoryId(Integer categoryId);
 }
