@@ -7,8 +7,10 @@ import lombok.extern.slf4j.Slf4j;
 import medicine.online.client.backend.enums.TopicStatusEnum;
 import medicine.online.client.backend.mapper.*;
 import medicine.online.client.backend.model.dto.InsertDTO;
+import medicine.online.client.backend.model.dto.ReplyDTO;
 import medicine.online.client.backend.model.entity.*;
 import medicine.online.client.backend.model.vo.InsertVO;
+import medicine.online.client.backend.model.vo.ReplyVO;
 import medicine.online.client.backend.model.vo.TopicVO;
 import medicine.online.client.backend.service.ProfessorService;
 import medicine.online.client.backend.service.TopicService;
@@ -138,8 +140,8 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         // 2不予回答，1已回答，0未回答，默认为0
         topic.setRemark("");
         // 默认为空
-        topic.setJudgeStatus(2);
-        // 默认为 2
+        topic.setJudgeStatus(0);
+        // 0待审核，1审核失败，2已审核，默认为 0
         topic.setDeleteFlag(0);
         // 默认未删除
         topic.setCreateTime(LocalDateTime.now());
@@ -151,11 +153,47 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         // 构造返回结果 VO
         InsertVO responseVO = new InsertVO();
         responseVO.setTopicId(topic.getPkId());
-        responseVO.setMessage("提问成功");
+        responseVO.setMessage("提问成功，待审核");
 
         return responseVO;
     }
 
+    @Override
+    public ReplyVO replyToTopic(ReplyDTO replyDTO) {
+        // 校验问题是否存在
+        Topic topic = topicMapper.selectById(replyDTO.getTopicId());
+        if (topic == null || topic.getDeleteFlag() == 1) {
+            throw new IllegalArgumentException("问题不存在或已被删除");
+        }
+
+        // 校验回复内容
+        if (replyDTO.getContent() == null || replyDTO.getContent().isEmpty()) {
+            throw new IllegalArgumentException("回复内容不能为空");
+        }
+
+        // 创建新的回复记录
+        TopicReply reply = new TopicReply();
+        reply.setUserId(replyDTO.getUserId());
+        reply.setTopicId(replyDTO.getTopicId());
+        reply.setContent(replyDTO.getContent());
+        reply.setImg(replyDTO.getImg());
+        reply.setJudgeStatus(0);
+        // 默认未审核
+        reply.setDeleteFlag(0);
+        // 默认未删除
+        reply.setCreateTime(LocalDateTime.now());
+        reply.setUpdateTime(LocalDateTime.now());
+
+        // 插入数据库
+        topicReplyMapper.insert(reply);
+
+        // 返回结果
+        ReplyVO replyVO = new ReplyVO();
+        replyVO.setReplyId(reply.getPkId());
+        replyVO.setMessage("回复成功，待审核");
+
+        return replyVO;
+    }
 
 
 }

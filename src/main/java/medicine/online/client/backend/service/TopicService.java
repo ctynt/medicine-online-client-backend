@@ -2,8 +2,10 @@ package medicine.online.client.backend.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import medicine.online.client.backend.model.dto.InsertDTO;
+import medicine.online.client.backend.model.dto.ReplyDTO;
 import medicine.online.client.backend.model.entity.Topic;
 import medicine.online.client.backend.model.vo.InsertVO;
+import medicine.online.client.backend.model.vo.ReplyVO;
 import medicine.online.client.backend.model.vo.TopicVO;
 
 import java.util.List;
@@ -24,4 +26,6 @@ public interface TopicService extends IService<Topic> {
     //发起提问
     InsertVO submitQuestion(InsertDTO submitQuestionDTO);
 
+    //作答
+    ReplyVO replyToTopic(ReplyDTO replyDTO);
 }
