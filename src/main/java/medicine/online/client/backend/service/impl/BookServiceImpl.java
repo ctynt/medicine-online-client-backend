@@ -37,10 +37,18 @@ public class BookServiceImpl extends ServiceImpl<BookMapper, Book> implements Bo
         }
         return bookVOList;
     }
-  
+
     @Override
     public List<BookVO> ztBook(Integer subjectId) {
-        return baseMapper.ztBook(subjectId);
+        List<BookVO> list = baseMapper.ztBook(subjectId);
+        for (BookVO bookVO : list) {
+            String cover = bookVO.getCover();
+            // 如果音频 URL 没有 https 前缀，则添加 https://
+            if (cover != null && !cover.isEmpty() && !cover.startsWith("https://")) {
+                bookVO.setCover("https://medicineonline.oss-cn-hangzhou.aliyuncs.com/" + cover);
+            }
+        }
+        return list;
     }
     
 }
