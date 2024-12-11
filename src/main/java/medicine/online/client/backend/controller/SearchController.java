@@ -43,6 +43,9 @@ public class SearchController {
 
             List<Object> allDataList = new ArrayList<>();
 
+            final String front = "https://medicineonline.oss-cn-hangzhou.aliyuncs.com/";
+
+
             // 查询专题表数据
             // 重新实例化对应类型的Page对象
             Page<SubjectVO> subjectVOPage = searchService.getSubjectByTitleLike(title, new Page<>(pageNum, pageSize));
@@ -70,6 +73,18 @@ public class SearchController {
             Page<CourseVO> courseVOPage = searchService.getCourseByTitleLike(title, new Page<>(pageNum, pageSize));
             List<CourseVO> courseVOList = courseVOPage.getRecords();
             for (CourseVO courseVO : courseVOList) {
+
+                // 处理 cover 图片前缀
+                String cover = courseVO.getCover();
+                if (cover != null && !cover.startsWith("https://")) {
+                    courseVO.setCover(front + cover);
+                }
+                // 处理 url 前缀
+                String url = courseVO.getUrl();
+                if (url != null && !url.startsWith("https://")) {
+                    courseVO.setUrl(front + url);
+                }
+
                 if (isCoursePkIdExist(courseVO.getPkId())) {
                     courseVO.setLeixing(3);
                     allDataList.add(courseVO);
@@ -81,6 +96,13 @@ public class SearchController {
             Page<PodcastVO> podcastVOPage = searchService.getPodcastByTitleLike(title, new Page<>(pageNum, pageSize));
             List<PodcastVO> podcastVOList = podcastVOPage.getRecords();
             for (PodcastVO podcastVO : podcastVOList) {
+
+                // 处理 cover 图片前缀
+                String cover = podcastVO.getCover();
+                if (cover != null && !cover.startsWith("https://")) {
+                    podcastVO.setCover(front + cover);
+                }
+
                 if (isPodcastPkIdExist(podcastVO.getPkId())) {
                     podcastVO.setLeixing(4);
                     allDataList.add(podcastVO);

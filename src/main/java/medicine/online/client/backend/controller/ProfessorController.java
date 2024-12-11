@@ -6,15 +6,17 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.common.result.Result;
-import medicine.online.client.backend.model.vo.ProfessorCategoryVO;
+import medicine.online.client.backend.model.dto.InsertDTO;
+import medicine.online.client.backend.model.dto.ReplyDTO;
+import medicine.online.client.backend.model.vo.*;
 import medicine.online.client.backend.model.query.ProfessorQuery;
-import medicine.online.client.backend.model.vo.ProfessorDetailVO;
-import medicine.online.client.backend.model.vo.ProfessorVO;
 import medicine.online.client.backend.service.ProfessorCategoryService;
 import medicine.online.client.backend.service.ProfessorService;
+import medicine.online.client.backend.service.TopicService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author: orange
@@ -27,6 +29,7 @@ import java.util.List;
 @AllArgsConstructor
 public class ProfessorController {
     private final ProfessorService professorService;
+    private final TopicService topicService;
     private final ProfessorCategoryService professorCategoryService;
 
     @PostMapping("/list")
@@ -52,4 +55,29 @@ public class ProfessorController {
     public Result<List<ProfessorVO>> getListByName(@RequestParam String name) {
         return Result.ok(professorService.getProfessorListByName(name));
     }
+
+    @PostMapping("/topicList/{id}")
+    @Operation(summary = "专家问答列表")
+    public Result<List<TopicVO>> getTopicList(@PathVariable Integer id) {
+        return Result.ok(topicService.getTopicList(id));
+    }
+
+    @PostMapping("/replyList/{id}")
+    @Operation(summary = "回复列表")
+    public Result<List<Map<String, Object>>> getTopicReplyList(@PathVariable Integer id) {
+        return Result.ok(topicService.getTopicReplyList(id));
+    }
+
+    @PostMapping("/insert")
+    @Operation(summary = "发起提问")
+    public Result<InsertVO> submitQuestion(@RequestBody @Valid InsertDTO submitQuestionDTO) {
+        return Result.ok(topicService.submitQuestion(submitQuestionDTO));
+    }
+
+    @PostMapping("/reply")
+    @Operation(summary = "作答")
+    public Result<ReplyVO> replyToTopic(@RequestBody @Valid ReplyDTO replyDTO) {
+        return Result.ok(topicService.replyToTopic(replyDTO));
+    }
+
 }

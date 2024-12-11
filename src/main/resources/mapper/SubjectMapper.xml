@@ -30,7 +30,7 @@
 
 
     <select id="getSubjectDetail" resultMap="SubjectResultMap">
-        SELECT ts.pk_id, ts.cover, ts.brief, ts.claim
+        SELECT ts.*
         FROM t_subject ts
         WHERE ts.state = 4 AND ts.pk_id = #{id}
         GROUP BY ts.pk_id, ts.cover, ts.brief, ts.claim

@@ -26,6 +26,10 @@ public class ResourceController {
 
     private final CourseService courseService;
 
+    private final PodcastService podcastService;
+
+    private final PodcastAudioService podcastAudioService;
+
     @PostMapping("/book/category")
     @Operation(summary = "书本分类")
     public Result<List<BookCategoryVO>> getCategoryList() {
@@ -54,5 +58,17 @@ public class ResourceController {
     @Operation(summary = "视频列表")
     public Result<List<CourseVO>> getCourseList(@RequestParam Integer categoryId) {
         return Result.ok(courseService.getCourseList(categoryId));
+    }
+
+    @PostMapping("/podcast/list")
+    @Operation(summary = "音频列表")
+    public Result<List<PodcastVO>> getPodcastList(@RequestParam Integer categoryId) {
+        return Result.ok(podcastService.getPodcastByCategoryId(categoryId));
+    }
+
+    @PostMapping("/podcast/detail/{id}")
+    @Operation(summary = "音频详情")
+    public Result<List<PodcastAudioVO>>getPodcastDetail(@PathVariable Integer id) {
+        return Result.ok(podcastAudioService.getPodcastDetail(id));
     }
 }
