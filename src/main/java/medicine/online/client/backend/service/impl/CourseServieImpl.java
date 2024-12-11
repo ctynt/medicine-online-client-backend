@@ -54,9 +54,9 @@ public class CourseServieImpl extends ServiceImpl<CourseMapper, Course> implemen
 
     // 专题视频
     @Override
-    public PageResult<CourseVO> getPageCourseList(Query query, Integer categoryId) {
+    public PageResult<CourseVO> getPageCourseList(Query query, Integer subjectId, Integer categoryId) {
         Page<CourseVO> page = new Page<>(query.getPage(), query.getLimit());
-        List<CourseVO> list = baseMapper.getPageCourseList(page, query, categoryId);
+        List<CourseVO> list = baseMapper.getPageCourseList(page, query, subjectId, categoryId);
         // 处理 cover 和 url 字段
         for (CourseVO courseVO : list) {
             // 处理 cover 图片前缀

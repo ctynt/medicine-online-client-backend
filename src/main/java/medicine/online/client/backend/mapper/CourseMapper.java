@@ -20,7 +20,7 @@ public interface CourseMapper extends BaseMapper<Course> {
     List<CourseVO> getsPageCourseList(Page<CourseVO> page, @Param("query") Query query);
 
     // 获取分页专题视频列表方法
-    List<CourseVO> getPageCourseList(Page<CourseVO> page, @Param("query") Query query, Integer categoryId);
+    List<CourseVO> getPageCourseList(Page<CourseVO> page, @Param("query") Query query, Integer subjectId, Integer categoryId);
 
     // 模糊查询
     Page<CourseVO> getCourseByTitleLike(@Param("title") String title, Page<CourseVO> page, QueryWrapper<CourseVO> queryWrapper);
