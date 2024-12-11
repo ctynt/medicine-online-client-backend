@@ -13,6 +13,8 @@ import medicine.online.client.backend.model.vo.CourseVO;
 import medicine.online.client.backend.service.CourseService;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @AllArgsConstructor
 @Tag(name = "视频接口", description = "视频接口")
@@ -36,5 +38,11 @@ public class CourseController {
     @Operation(summary = "专题分页视频集列表")
     public Result<PageResult<CourseVO>> getPageVideosList(@RequestBody @Valid Query query, @PathVariable Integer videosId) {
         return Result.ok(courseService.getPageVideosList(query, videosId));
+    }
+
+    @PostMapping("/item/course/{subjectId}")
+    @Operation(summary = "专题视频列表")
+    public Result<List<CourseVO>> ztCourse(@PathVariable Integer subjectId) {
+        return Result.ok(courseService.ztCourse(subjectId));
     }
 }
