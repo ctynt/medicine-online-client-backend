@@ -17,6 +17,7 @@ public class ResourceCategory {
     private Integer pkId;
     private Integer parentId;
     private String title;
+    private Integer type;
     private Integer sort;
 
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)

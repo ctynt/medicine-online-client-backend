@@ -8,10 +8,9 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 public interface BookService extends IService<Book> {
-
-    // 定义获取书籍方法
+      // 定义获取书籍方法
     List<BookVO> ztBook(@Param("subjectId") Integer subjectId);
   
-    List<BookVO> getBookListByCategoryId(Integer categoryId);
-
+    List<BookVO> getBookListByCategory(String categoryName);
 }
+

@@ -11,4 +11,5 @@ public interface SubjectLabelMapper extends BaseMapper<SubjectLabel> {
 
     // 获取专题视频集列表
     List<SubjectLabelVO> getSubjectLabelList(@Param("subjectId") Integer subjectId);
+
 }

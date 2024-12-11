@@ -19,5 +19,8 @@ public class CourseVO {
     @Schema(description = "收藏量")
     private Integer starNum;
 
+    @Schema(description = "视频url")
+    private String url;
+
     private Integer leixing;
 }

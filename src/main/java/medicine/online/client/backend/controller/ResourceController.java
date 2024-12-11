@@ -4,23 +4,12 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.Result;
-import medicine.online.client.backend.model.vo.BookCategoryVO;
-import medicine.online.client.backend.model.vo.BookChapterVO;
-import medicine.online.client.backend.model.vo.BookVO;
-import medicine.online.client.backend.model.vo.ResourceCategoryVO;
-import medicine.online.client.backend.service.BookCategoryService;
-import medicine.online.client.backend.service.BookChapterService;
-import medicine.online.client.backend.service.BookService;
-import medicine.online.client.backend.service.ResourceCategoryService;
+import medicine.online.client.backend.model.vo.*;
+import medicine.online.client.backend.service.*;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-/**
- * @Author ctynt
- * @Date 2024/12/3
- * @Description ResourceController
- */
 @Tag(name = "知识库模块")
 @RestController
 @RequestMapping("/resource")
@@ -35,6 +24,8 @@ public class ResourceController {
 
     private final ResourceCategoryService resourceCategoryService;
 
+    private final CourseService courseService;
+
     @PostMapping("/book/category")
     @Operation(summary = "书本分类")
     public Result<List<BookCategoryVO>> getCategoryList() {
@@ -43,8 +34,8 @@ public class ResourceController {
 
     @PostMapping("/book/list")
     @Operation(summary = "书本列表")
-    public Result<List<BookVO>> getList(Integer categoryId) {
-        return Result.ok(bookService.getBookListByCategoryId(categoryId));
+    public Result<List<BookVO>> getList(@RequestParam String categoryName) {
+        return Result.ok(bookService.getBookListByCategory(categoryName));
     }
 
     @PostMapping("/book/getBookChapterList/{bookId}")
@@ -55,7 +46,13 @@ public class ResourceController {
 
     @PostMapping("/category")
     @Operation(summary = "资源分类")
-    public Result<List<ResourceCategoryVO>> getResourceCategoryList(@RequestParam(required = false) Integer parentId) {
+    public Result<List<ResourceCategoryVO>> getResourceCategoryList(@RequestParam Integer parentId) {
         return Result.ok(resourceCategoryService.getResourceCategoryTree(parentId));
+    }
+
+    @PostMapping("/video/list")
+    @Operation(summary = "视频列表")
+    public Result<List<CourseVO>> getCourseList(@RequestParam Integer categoryId) {
+        return Result.ok(courseService.getCourseList(categoryId));
     }
 }

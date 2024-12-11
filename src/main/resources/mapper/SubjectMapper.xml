@@ -11,15 +11,23 @@
         <result property="starNum" column="star_num"/>
         <result property="brief" column="brief" />
         <result property="claim" column="claim" />
+        <result property="type" column="type" />
     </resultMap>
 
     <select id="getSubjectList" resultMap="SubjectResultMap">
-        SELECT ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
+        SELECT ts.*
         FROM t_subject ts
-        WHERE ts.state = 4
-<!--        AND ts.type = 0-->
-        GROUP BY ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
+        WHERE ts.state = 4 AND ts.type = 1
+#         GROUP BY ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
     </select>
+
+    <select id="getSubjectList0" resultMap="SubjectResultMap">
+        SELECT ts.*
+        FROM t_subject ts
+        WHERE ts.state = 4 AND ts.type = 0
+#         GROUP BY ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
+    </select>
+
 
     <select id="getSubjectDetail" resultMap="SubjectResultMap">
         SELECT ts.pk_id, ts.cover, ts.brief, ts.claim
