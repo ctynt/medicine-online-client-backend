@@ -10,10 +10,14 @@ public class PodcastVO {
     private Integer pkId;
     @Schema(description = "主题")
     private String title;
+    @Schema(description = "封面")
+    private String cover;
     @Schema(description = "标签")
     private String label;
     @Schema(description = "浏览量")
     private Integer browseNum;
+    @Schema(description = "图片url")
+    private String cover;
 
     private Integer leixing;
 }

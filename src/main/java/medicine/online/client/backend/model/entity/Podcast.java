@@ -20,7 +20,6 @@ public class Podcast {
     private Integer pkId;
     private String title;
     private String cover;
-    private String text;
     private String author;
     private String authorAvatar;
     private String authorProfession;

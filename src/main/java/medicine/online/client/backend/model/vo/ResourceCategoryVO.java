@@ -20,4 +20,6 @@ public class ResourceCategoryVO extends TreeNode<ResourceCategoryVO> {
     private String title;
     @Schema(description = "排序")
     private Integer sort;
+    @Schema(description = "类型")
+    private Integer type;
 }

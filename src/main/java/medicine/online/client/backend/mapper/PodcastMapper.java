@@ -1,6 +1,7 @@
 package medicine.online.client.backend.mapper;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -20,4 +21,8 @@ public interface PodcastMapper extends BaseMapper<Podcast> {
 
     // 新增方法用于判断pk_id是否存在于t_index_content表中
     boolean isPodcastPkIdExist(Integer pkId);
+
+    default List<Podcast> selectListByCategoryId(Integer categoryId) {
+        return this.selectList(new LambdaQueryWrapper<Podcast>().eq(Podcast::getCategoryId, categoryId));
+    }
 }
