@@ -5,7 +5,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
-import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.model.dto.StarDTO;
 import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
-import javax.print.DocFlavor;
 import java.util.HashMap;
 import java.util.Map;
 

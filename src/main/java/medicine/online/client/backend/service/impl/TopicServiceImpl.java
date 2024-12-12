@@ -15,7 +15,9 @@ import medicine.online.client.backend.model.vo.TopicVO;
 import medicine.online.client.backend.service.ProfessorService;
 import medicine.online.client.backend.service.TopicService;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
@@ -31,7 +33,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements TopicService{
+public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements TopicService {
     private final TopicMapper topicMapper;
     private final TopicReplyMapper topicReplyMapper;
     private final ProfessorService professorService;
@@ -39,12 +41,13 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
     private final ProfessorCategoryMapper professorCategoryMapper;
     private final StudentMapper studentMapper;
     private final StudentProfessionMapper studentProfessionMapper;
+    private final OssServiceImpl ossService;
 
     @Override
     public List<TopicVO> getTopicList(Integer id) {
         // 根据教授ID查询相关的Topic
         List<Topic> topics = topicMapper.selectList(new LambdaQueryWrapper<Topic>()
-                .eq(Topic::getProfessorId,id)
+                .eq(Topic::getProfessorId, id)
                 .eq(Topic::getDeleteFlag, 0));
         // 排除已删除的记录
 
@@ -110,7 +113,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         Integer userId = submitQuestionDTO.getUserId();
         Integer professorId = submitQuestionDTO.getProfessorId();
         String content = submitQuestionDTO.getContent();
-        String img = submitQuestionDTO.getImg();
+        MultipartFile imgFile = submitQuestionDTO.getImgFile();
 
         // 校验用户是否存在
         User user = userMapper.selectById(userId);
@@ -129,13 +132,24 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
             throw new IllegalArgumentException("问题内容不能为空");
         }
 
+        // 上传图片到OSS
+        String img = "";
+        if (imgFile != null && !imgFile.isEmpty()) {
+            try {
+                img = ossService.uploadFile(imgFile);
+            } catch (IOException e) {
+                log.error("上传图片失败", e);
+                throw new RuntimeException("上传图片失败", e);
+            }
+        }
+
         // 创建新的 Topic 实体对象
         Topic topic = new Topic();
         topic.setUserId(userId);
         topic.setProfessorId(professorId);
         topic.setContent(content);
         topic.setImg(img);
-        // img 可为空
+        // 保存OSS URL
         topic.setStatus(0);
         // 2不予回答，1已回答，0未回答，默认为0
         topic.setRemark("");
@@ -171,12 +185,23 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
             throw new IllegalArgumentException("回复内容不能为空");
         }
 
+        // 上传图片到OSS
+        String img = "";
+        if (replyDTO.getImgFile() != null && !replyDTO.getImgFile().isEmpty()) {
+            try {
+                img = ossService.uploadFile(replyDTO.getImgFile());
+            } catch (IOException e) {
+                log.error("上传图片失败", e);
+                throw new RuntimeException("上传图片失败", e);
+            }
+        }
+
         // 创建新的回复记录
         TopicReply reply = new TopicReply();
         reply.setUserId(replyDTO.getUserId());
         reply.setTopicId(replyDTO.getTopicId());
         reply.setContent(replyDTO.getContent());
-        reply.setImg(replyDTO.getImg());
+        reply.setImg(img); // 保存OSS URL
         reply.setJudgeStatus(0);
         // 默认未审核
         reply.setDeleteFlag(0);
