@@ -78,7 +78,7 @@ public class ProfessorController {
             HttpServletRequest request,
             @Parameter(description = "教授id") @RequestParam Integer professorId,
             @Parameter(description = "内容") @RequestParam String content,
-            @Parameter(description = "图片文件") @RequestParam(required = false) MultipartFile imgFile) {
+            @Parameter(description = "图片文件") @RequestParam(required = false) MultipartFile[] imgFile) {
 
         // 从请求头中解析用户ID
         String token = request.getHeader("Authorization");
@@ -89,8 +89,8 @@ public class ProfessorController {
         insertDTO.setUserId(userId);
         insertDTO.setProfessorId(professorId);
         insertDTO.setContent(content);
-        if (imgFile != null && !imgFile.isEmpty()) {
-            insertDTO.setImgFile(imgFile);
+        if (imgFile != null && imgFile.length > 0) {
+            insertDTO.setImgFile(List.of(imgFile));
         }
 
         return Result.ok(topicService.submitQuestion(insertDTO));
@@ -103,7 +103,7 @@ public class ProfessorController {
             HttpServletRequest request,
             @Parameter(description = "问题 ID") @RequestParam Integer topicId,
             @Parameter(description = "回复内容") @RequestParam String content,
-            @Parameter(description = "图片文件") @RequestParam(required = false) MultipartFile imgFile) {
+            @Parameter(description = "图片文件") @RequestParam(required = false) MultipartFile[] imgFile) {
 
         // 解析用户ID
         String token = request.getHeader("Authorization");
@@ -114,8 +114,8 @@ public class ProfessorController {
         replyDTO.setUserId(userId);
         replyDTO.setTopicId(topicId);
         replyDTO.setContent(content);
-        if (imgFile != null && !imgFile.isEmpty()) {
-            replyDTO.setImgFile(imgFile);
+        if (imgFile != null && imgFile.length > 0) {
+            replyDTO.setImgFile(List.of(imgFile));
         }
 
         return Result.ok(topicService.replyToTopic(replyDTO));
