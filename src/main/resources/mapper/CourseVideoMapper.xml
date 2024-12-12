@@ -14,7 +14,6 @@
         FROM t_course_video tcv
         JOIN t_course tc ON  tcv.course_id = tc.pk_id
         WHERE tcv.course_id = #{Id}
-
     </select>
 
 </mapper>

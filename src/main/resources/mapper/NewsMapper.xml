@@ -10,6 +10,7 @@
         <result property="browseNum" column="browse_num"/>
         <result property="starNum" column="star_num"/>
         <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
     </resultMap>
 
     <select id="indexPageNews" resultMap="NewsResultMap">
@@ -17,20 +18,20 @@
         FROM t_news tn
         JOIN t_index_content tic ON tn.pk_id = tic.content_id
         WHERE tn.state = 4 AND tic.type = 1 AND tic.category_id = 78
-        GROUP BY tn.pk_id, tn.title, tn.cover, tn.label, tn.browse_num, tn.star_num,tn.create_time
-        ORDER BY tn.create_time DESC
+
+        ORDER BY tn.update_time DESC
         LIMIT 18
     </select>
 
     <select id="getNewsPage" resultMap="NewsResultMap">
-        SELECT tn.pk_id, tn.title, tn.cover, tn.label, tn.browse_num, tn.star_num
+        SELECT tn.pk_id, tn.title, tn.cover, tn.label, tn.browse_num, tn.star_num,tn.update_time
         FROM t_news tn
         JOIN t_index_content tic ON tn.pk_id = tic.content_id
         WHERE tn.state = 4 AND tic.type = 1 AND tic.category_id = 78
         <if test="query.title != null and query.title != ''  ">
             AND tn.title LIKE concat('%',#{query.title},'%')
         </if>
-        ORDER BY tn.create_time DESC
+        ORDER BY tn.update_time DESC
     </select>
 
     <select id="getNewsDetail" resultType="medicine.online.client.backend.model.vo.NewsVO">

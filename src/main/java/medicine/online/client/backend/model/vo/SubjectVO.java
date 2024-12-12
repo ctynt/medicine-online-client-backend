@@ -33,5 +33,8 @@ public class SubjectVO {
     @Schema(description = "类型")
     private Integer type;
 
+    @Schema(description = "删除")
+    private Integer deleteFlag;
+
     private Integer leixing;
 }

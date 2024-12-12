@@ -39,6 +39,7 @@ public class Subject implements Serializable {
     @TableField(value = "end_time", fill = FieldFill.INSERT)
     private LocalDateTime endTime;
     private Integer type;
+    private Integer deleteFlag;
 
 
 }
