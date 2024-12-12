@@ -2,6 +2,7 @@ package medicine.online.client.backend.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * @author WangL
@@ -19,6 +20,12 @@ public class InsertDTO {
     @Schema(description = "内容")
     private String content;
 
-    @Schema(description = "图片")
+    @Schema(description = "图片文件")
+    private MultipartFile imgFile;
+
+    @Schema(description = "图片URL")
     private String img;
 }
+
+
+

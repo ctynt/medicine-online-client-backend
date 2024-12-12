@@ -1,19 +1,23 @@
 package medicine.online.client.backend.controller;
 
+import cn.hutool.json.JSONObject;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.model.dto.InsertDTO;
 import medicine.online.client.backend.model.dto.ReplyDTO;
-import medicine.online.client.backend.model.vo.*;
 import medicine.online.client.backend.model.query.ProfessorQuery;
+import medicine.online.client.backend.model.vo.*;
 import medicine.online.client.backend.service.ProfessorCategoryService;
 import medicine.online.client.backend.service.ProfessorService;
 import medicine.online.client.backend.service.TopicService;
+import medicine.online.client.backend.utils.JwtUtil;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
@@ -34,7 +38,7 @@ public class ProfessorController {
 
     @PostMapping("/list")
     @Operation(summary = "专家列表")
-    public Result<PageResult<ProfessorVO>> list(@RequestBody @Valid ProfessorQuery query) {
+    public Result<PageResult<ProfessorVO>> list(@RequestBody ProfessorQuery query) {
         return Result.ok(professorService.getProfessorList(query));
     }
 
@@ -68,16 +72,55 @@ public class ProfessorController {
         return Result.ok(topicService.getTopicReplyList(id));
     }
 
-    @PostMapping("/insert")
+    @PostMapping(value = "/insert")
     @Operation(summary = "发起提问")
-    public Result<InsertVO> submitQuestion(@RequestBody @Valid InsertDTO submitQuestionDTO) {
-        return Result.ok(topicService.submitQuestion(submitQuestionDTO));
+    public Result<InsertVO> submitQuestion(
+            HttpServletRequest request,
+            @Parameter(description = "教授id") @RequestParam Integer professorId,
+            @Parameter(description = "内容") @RequestParam String content,
+            @Parameter(description = "图片文件") @RequestParam(required = false) MultipartFile imgFile) {
+
+        // 从请求头中解析用户ID
+        String token = request.getHeader("Authorization");
+        JSONObject claims = JwtUtil.getJSONObject(token);
+        Integer userId = claims.getInt("userId");
+
+        InsertDTO insertDTO = new InsertDTO();
+        insertDTO.setUserId(userId);
+        insertDTO.setProfessorId(professorId);
+        insertDTO.setContent(content);
+        if (imgFile != null && !imgFile.isEmpty()) {
+            insertDTO.setImgFile(imgFile);
+        }
+
+        return Result.ok(topicService.submitQuestion(insertDTO));
     }
 
-    @PostMapping("/reply")
+
+    @PostMapping(value = "/reply")
     @Operation(summary = "作答")
-    public Result<ReplyVO> replyToTopic(@RequestBody @Valid ReplyDTO replyDTO) {
+    public Result<ReplyVO> replyToTopic(
+            HttpServletRequest request,
+            @Parameter(description = "问题 ID") @RequestParam Integer topicId,
+            @Parameter(description = "回复内容") @RequestParam String content,
+            @Parameter(description = "图片文件") @RequestParam(required = false) MultipartFile imgFile) {
+
+        // 解析用户ID
+        String token = request.getHeader("Authorization");
+        JSONObject claims = JwtUtil.getJSONObject(token);
+        Integer userId = claims.getInt("userId");
+
+        ReplyDTO replyDTO = new ReplyDTO();
+        replyDTO.setUserId(userId);
+        replyDTO.setTopicId(topicId);
+        replyDTO.setContent(content);
+        if (imgFile != null && !imgFile.isEmpty()) {
+            replyDTO.setImgFile(imgFile);
+        }
+
         return Result.ok(topicService.replyToTopic(replyDTO));
     }
-
 }
+
+
+
