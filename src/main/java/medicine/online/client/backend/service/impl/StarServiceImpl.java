@@ -150,18 +150,6 @@ public class StarServiceImpl implements StarService {
 
         return result > 0;
     }
-
-    /**
-     * 获取当前用户ID（模拟获取用户ID，实际可根据用户会话或 JWT 获取）
-     */
-//    private Integer getCurrentUserId() {
-//        try {
-//            return RequestContext.getUserId();
-//        } catch (IllegalArgumentException e) {
-//            log.error("Failed to get user ID from context: {}", e.getMessage());
-//            return null;
-//        }
-//    }
 }
 
 
