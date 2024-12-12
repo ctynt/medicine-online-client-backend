@@ -6,6 +6,8 @@ import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.model.entity.Course;
 import medicine.online.client.backend.model.query.Query;
 import medicine.online.client.backend.model.vo.CourseVO;
+import medicine.online.client.backend.model.vo.PodcastVO;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -23,4 +25,6 @@ public interface CourseService extends IService<Course> {
     // 知识库查询
     List<CourseVO> getCourseList(Integer categoryId);
 
+    // 专题视频列表
+    List<CourseVO> ztCourse(@Param("subjectId") Integer subjectId);
 }

@@ -52,5 +52,15 @@
         WHERE tsl.pk_id = #{videosId}
     </select>
 
+    <!--专题视频-->
+    <select id="ztCourse" resultMap="CourseMap">
+        SELECT tc.*
+        FROM t_course tc
+                 LEFT JOIN t_subject_associated tsa ON tc.pk_id = tsa.content_id
+                 JOIN t_subject ts ON tsa.subject_id = ts.pk_id
+        WHERE tc.state = 4 AND ts.pk_id = #{subjectId}
+        ORDER BY tc.create_time DESC
+        LIMIT 4
+    </select>
 
 </mapper>

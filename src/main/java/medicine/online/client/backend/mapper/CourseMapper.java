@@ -10,6 +10,7 @@ import medicine.online.client.backend.model.query.NewsQuery;
 import medicine.online.client.backend.model.query.Query;
 import medicine.online.client.backend.model.vo.CourseVO;
 import medicine.online.client.backend.model.vo.NewsVO;
+import medicine.online.client.backend.model.vo.PodcastVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -34,5 +35,8 @@ public interface CourseMapper extends BaseMapper<Course> {
     default List<Course> selectListByCategoryId(Integer categoryId) {
         return this.selectList(new LambdaQueryWrapper<Course>().eq(Course::getCategoryId, categoryId));
     }
+
+    // 获取专题视频列表方法
+    List<CourseVO> ztCourse(@Param("subjectId") Integer subjectId);
 
 }
