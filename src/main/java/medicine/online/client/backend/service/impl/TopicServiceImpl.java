@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,7 +114,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         Integer userId = submitQuestionDTO.getUserId();
         Integer professorId = submitQuestionDTO.getProfessorId();
         String content = submitQuestionDTO.getContent();
-        MultipartFile imgFile = submitQuestionDTO.getImgFile();
+        List<MultipartFile> imgFile = submitQuestionDTO.getImgFile();
 
         // 校验用户是否存在
         User user = userMapper.selectById(userId);
@@ -133,22 +134,14 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         }
 
         // 上传图片到OSS
-        String img = "";
-        if (imgFile != null && !imgFile.isEmpty()) {
-            try {
-                img = ossService.uploadFile(imgFile);
-            } catch (IOException e) {
-                log.error("上传图片失败", e);
-                throw new RuntimeException("上传图片失败", e);
-            }
-        }
+        List<String> imgUrls = uploadImages(imgFile);
 
         // 创建新的 Topic 实体对象
         Topic topic = new Topic();
         topic.setUserId(userId);
         topic.setProfessorId(professorId);
         topic.setContent(content);
-        topic.setImg(img);
+        topic.setImg(String.join(",", imgUrls));
         // 保存OSS URL
         topic.setStatus(0);
         // 2不予回答，1已回答，0未回答，默认为0
@@ -186,22 +179,15 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         }
 
         // 上传图片到OSS
-        String img = "";
-        if (replyDTO.getImgFile() != null && !replyDTO.getImgFile().isEmpty()) {
-            try {
-                img = ossService.uploadFile(replyDTO.getImgFile());
-            } catch (IOException e) {
-                log.error("上传图片失败", e);
-                throw new RuntimeException("上传图片失败", e);
-            }
-        }
+        List<String> imgUrls = uploadImages(replyDTO.getImgFile());
 
         // 创建新的回复记录
         TopicReply reply = new TopicReply();
         reply.setUserId(replyDTO.getUserId());
         reply.setTopicId(replyDTO.getTopicId());
         reply.setContent(replyDTO.getContent());
-        reply.setImg(img); // 保存OSS URL
+        reply.setImg(String.join(",", imgUrls));
+        // 保存OSS URL
         reply.setJudgeStatus(0);
         // 默认未审核
         reply.setDeleteFlag(0);
@@ -220,5 +206,24 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         return replyVO;
     }
 
+    private List<String> uploadImages(List<MultipartFile> imgFiles) {
+        List<String> imgUrls = new ArrayList<>();
+        if (imgFiles == null || imgFiles.isEmpty()) {
+            return imgUrls;
+        }
 
+        try {
+            for (MultipartFile file : imgFiles) {
+                if (file != null && !file.isEmpty()) {
+                    String imgUrl = ossService.uploadFile(file);
+                    imgUrls.add(imgUrl);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Failed to upload images", e);
+            throw new RuntimeException("Failed to upload images", e);
+        }
+
+        return imgUrls;
+    }
 }

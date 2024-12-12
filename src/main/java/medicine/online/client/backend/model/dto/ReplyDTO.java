@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 /**
  * @author WangL
  */
@@ -20,13 +22,11 @@ public class ReplyDTO {
     @Schema(description = "回复内容")
     private String content;
 
-    @Schema(description = "图片文件")
-    private MultipartFile imgFile;
-    // 新增字段用于接收上传的图片文件
+    @Schema(description = "图片文件列表")
+    private List<MultipartFile> imgFile;
 
-    @Schema(description = "图片URL")
-    // 原来的img字段可以保留，用于存储OSS URL
-    private String img;
+    @Schema(description = "图片URL列表") // 原来的img字段可以保留，用于存储OSS URL
+    private List<String> img;
 }
 
 
