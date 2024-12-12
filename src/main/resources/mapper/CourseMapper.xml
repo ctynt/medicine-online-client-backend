@@ -32,6 +32,7 @@
         SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
         FROM t_course tc
         WHERE title LIKE '%${title}%'
+        AND tc.state = 4
     </select>
 
     <select id="isCoursePkIdExist" resultType="boolean">

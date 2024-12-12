@@ -16,6 +16,8 @@ public class PodcastVO {
     private String label;
     @Schema(description = "浏览量")
     private Integer browseNum;
+    @Schema(description = "收藏量")
+    private Integer starNum;
 
     private Integer leixing;
 }

@@ -28,7 +28,6 @@
 #         GROUP BY ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
     </select>
 
-
     <select id="getSubjectDetail" resultMap="SubjectResultMap">
         SELECT ts.*
         FROM t_subject ts
