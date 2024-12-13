@@ -3,6 +3,8 @@ package medicine.online.client.backend.model.vo;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 @Schema(name = "PodcastVo", description = "音频返回vo")
 public class PodcastVO {
@@ -16,6 +18,9 @@ public class PodcastVO {
     private String label;
     @Schema(description = "浏览量")
     private Integer browseNum;
-
+    @Schema(description = "收藏量")
+    private Integer starNum;
+    @Schema(description = "更新时间")
+    private LocalDateTime updateTime;
     private Integer leixing;
 }

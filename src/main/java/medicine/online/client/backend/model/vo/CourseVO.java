@@ -22,5 +22,7 @@ public class CourseVO {
     @Schema(description = "视频url")
     private String url;
 
+    @Schema(description = "逻辑删除")
+    private Integer deleteFlag;
     private Integer leixing;
 }
