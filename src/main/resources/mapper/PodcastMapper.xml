@@ -16,7 +16,7 @@
         JOIN t_subject_associated tsa ON tp.pk_id = tsa.content_id
         JOIN t_subject ts ON tsa.subject_id = ts.pk_id
         WHERE tsa.type = 4 AND tp.state = 4
-        AND tsa.subject_id = #{subjectId}
+        AND tsa.subject_id = #{subjectId} AND tsa.delete_flag = 0
 #         ORDER BY tp.pk_id DESC
         ORDER BY tp.update_time DESC
     </select>

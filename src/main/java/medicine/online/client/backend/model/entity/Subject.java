@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import com.baomidou.mybatisplus.annotation.TableLogic;
 
 @Data
 @AllArgsConstructor
@@ -39,6 +40,7 @@ public class Subject implements Serializable {
     @TableField(value = "end_time", fill = FieldFill.INSERT)
     private LocalDateTime endTime;
     private Integer type;
+    @TableLogic
     private Integer deleteFlag;
 
 
