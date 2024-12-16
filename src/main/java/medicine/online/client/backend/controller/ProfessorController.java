@@ -10,6 +10,7 @@ import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.model.dto.InsertDTO;
 import medicine.online.client.backend.model.dto.ReplyDTO;
+import medicine.online.client.backend.model.entity.Topic;
 import medicine.online.client.backend.model.query.ProfessorQuery;
 import medicine.online.client.backend.model.vo.*;
 import medicine.online.client.backend.service.ProfessorCategoryService;
@@ -64,6 +65,12 @@ public class ProfessorController {
     @Operation(summary = "专家问答列表")
     public Result<List<TopicVO>> getTopicList(@PathVariable Integer id) {
         return Result.ok(topicService.getTopicList(id));
+    }
+
+    @PostMapping("/topic/{id}")
+    @Operation(summary = "问题详情")
+    public Result<TopicVO> getTopic(@PathVariable Integer id) {
+        return Result.ok(topicService.getTopicDetail(id));
     }
 
     @PostMapping("/replyList/{id}")

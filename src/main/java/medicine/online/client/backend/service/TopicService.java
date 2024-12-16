@@ -23,6 +23,9 @@ public interface TopicService extends IService<Topic> {
     //根据id查询作答列表
     List<Map<String, Object>> getTopicReplyList(Integer id);
 
+    // 根据id查询问题详情
+    TopicVO getTopicDetail(Integer id);
+
     //发起提问
     InsertVO submitQuestion(InsertDTO submitQuestionDTO);
 
