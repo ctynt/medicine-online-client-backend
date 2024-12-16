@@ -4,6 +4,7 @@
     <select id="selectQuizItemByExamineId" resultType="medicine.online.client.backend.model.vo.QuizItemVO">
         SELECT * FROM t_quiz_item WHERE delete_flag = 0
         AND examine_id=#{examineId}
+        AND type = 0
         ORDER BY create_time DESC
     </select>
 </mapper>

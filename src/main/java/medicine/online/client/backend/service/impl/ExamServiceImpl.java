@@ -22,4 +22,9 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
     public List<Exam> getExamList(Integer quizDetailId) {
         return examMapper.selectExamByDetailId(quizDetailId);
     }
+
+    @Override
+    public List<Exam> getExamsByExamineId(Integer examineId) {
+        return baseMapper.selectExamsByExamineId(examineId);
+    }
 }

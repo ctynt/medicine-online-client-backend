@@ -12,4 +12,5 @@ import java.util.List;
  **/
 public interface ExamService extends IService<Exam> {
     List<Exam> getExamList(Integer quizDetailId);
+    List<Exam> getExamsByExamineId(Integer examineId);
 }

@@ -50,11 +50,13 @@ public class QuizController {
         return Result.ok(quizItemService.getItemList(examineId));
     }
 
-    @PostMapping("/exam")
+    @PostMapping("/exam/{examineId}")
     @Operation(summary = "试卷列表")
-    public Result<List<Exam>> getExamList(@RequestParam Integer quizDetailId){
-        return Result.ok(examService.getExamList(quizDetailId));
+    public Result<List<Exam>> getExamList(@PathVariable Integer examineId){
+        return Result.ok(examService.getExamsByExamineId(examineId));
     }
+
+
 
     @PostMapping("/questionList")
     @Operation(summary = "题目选项")
