@@ -25,4 +25,6 @@ public class QuizItemVO implements Serializable {
     private String name;
     @Schema(description = "描述")
     private String brief;
+    @Schema(description = "类型")
+    private Integer type;
 }
