@@ -13,8 +13,7 @@
         SELECT tcv.pk_id, tcv.course_id, tcv.title, tcv.url, tc.brief
         FROM t_course_video tcv
         JOIN t_course tc ON  tcv.course_id = tc.pk_id
-        WHERE tcv.course_id = #{Id}
-
+        WHERE tcv.course_id = #{Id} AND tcv.delete_flag = 0
     </select>
 
 </mapper>

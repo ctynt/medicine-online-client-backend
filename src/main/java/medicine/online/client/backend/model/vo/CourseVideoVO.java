@@ -15,5 +15,7 @@ public class CourseVideoVO {
     @Schema(description = "路径")
     private String url;
 
+    @Schema(description = "逻辑删除")
+    private Integer deleteFlag;
 
 }

@@ -1,12 +1,9 @@
 package medicine.online.client.backend.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import jakarta.servlet.http.HttpServletRequest;
-import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.model.dto.StarDTO;
 import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
-import medicine.online.client.backend.model.vo.UserInfoVO;
 
 /**
  * @author WangL
