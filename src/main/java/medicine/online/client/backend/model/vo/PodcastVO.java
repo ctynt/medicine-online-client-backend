@@ -22,5 +22,6 @@ public class PodcastVO {
     private Integer starNum;
     @Schema(description = "更新时间")
     private LocalDateTime updateTime;
+
     private Integer leixing;
 }
