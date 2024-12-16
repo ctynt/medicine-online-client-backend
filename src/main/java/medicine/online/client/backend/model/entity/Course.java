@@ -36,5 +36,6 @@ public class Course implements Serializable {
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
     private Integer categoryId;
+    private Integer deleteFlag;
 
 }

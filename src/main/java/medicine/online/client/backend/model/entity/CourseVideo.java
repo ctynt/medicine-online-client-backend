@@ -26,4 +26,6 @@ public class CourseVideo {
     private LocalDateTime updateTime;
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
+
+    private Integer deleteFlag;
 }

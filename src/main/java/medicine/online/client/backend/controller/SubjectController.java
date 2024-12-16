@@ -24,10 +24,16 @@ import java.util.List;
 public class SubjectController {
     private final SubjectService subjectService;
 
-    @GetMapping("/itemList")
-    @Operation(summary = "专题列表")
+    @GetMapping("/exclusiveItemList")
+    @Operation(summary = "专属专题列表")
     public Result<List<SubjectVO>> getSubjectList() {
         return Result.ok(subjectService.getSubjectList());
+    }
+
+    @GetMapping("/publicItemList")
+    @Operation(summary = "公共专题列表")
+    public Result<List<SubjectVO>> getSubjectList0() {
+        return Result.ok(subjectService.getSubjectList0());
     }
 
     @GetMapping("/itemListDetail/{id}")

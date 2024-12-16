@@ -1,6 +1,7 @@
 package medicine.online.client.backend.mapper;
 
 
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -9,6 +10,7 @@ import medicine.online.client.backend.model.query.NewsQuery;
 import medicine.online.client.backend.model.query.Query;
 import medicine.online.client.backend.model.vo.CourseVO;
 import medicine.online.client.backend.model.vo.NewsVO;
+import medicine.online.client.backend.model.vo.PodcastVO;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -19,7 +21,7 @@ public interface CourseMapper extends BaseMapper<Course> {
     List<CourseVO> getsPageCourseList(Page<CourseVO> page, @Param("query") Query query);
 
     // 获取分页专题视频列表方法
-    List<CourseVO> getPageCourseList(Page<CourseVO> page, @Param("query") Query query, Integer categoryId);
+    List<CourseVO> getPageCourseList(Page<CourseVO> page, @Param("query") Query query, Integer subjectId, Integer categoryId);
 
     // 模糊查询
     Page<CourseVO> getCourseByTitleLike(@Param("title") String title, Page<CourseVO> page, QueryWrapper<CourseVO> queryWrapper);
@@ -29,5 +31,12 @@ public interface CourseMapper extends BaseMapper<Course> {
 
     // 获取分页专题视频集列表方法
     List<CourseVO> getPageVideosList(Page<CourseVO> page, @Param("query") Query query, Integer videosId);
+
+    default List<Course> selectListByCategoryId(Integer categoryId) {
+        return this.selectList(new LambdaQueryWrapper<Course>().eq(Course::getCategoryId, categoryId));
+    }
+
+    // 获取专题视频列表方法
+    List<CourseVO> ztCourse(@Param("subjectId") Integer subjectId);
 
 }

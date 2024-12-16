@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicine.online.client.backend.mapper.PaperMapper">
+
+    <resultMap id="PaperBankQuestionResultMap" type="medicine.online.client.backend.model.dto.PaperBankQuestion">
+        <id property="pkId" column="pkId" />
+        <result property="optionType" column="optionType" />
+        <result property="question" column="question" />
+        <collection property="options" ofType="medicine.online.client.backend.model.dto.BankOptionDTO">
+            <result property="option" column="option" />
+            <result property="content" column="content" />
+        </collection>
+    </resultMap>
+
+    <select id="selectPagedQuestions" parameterType="medicine.online.client.backend.model.query.QuestionQuery" resultMap="PaperBankQuestionResultMap">
+        SELECT
+            b.pk_id as "pkId",
+            b.option_type as "optionType",
+            b.question as "question",
+            bo.option as "option",
+            bo.content as "content"
+        FROM
+            t_quiz_bank b
+                LEFT JOIN t_quiz_bank_option bo ON b.pk_id = bo.bank_id
+        WHERE
+            b.pk_id IN (
+                SELECT
+                    pd.question_Id
+                FROM
+                    t_quiz_paper_detail pd
+                        JOIN t_quiz_paper p ON pd.content_id = p.pk_id
+                WHERE
+                    p.quiz_exam_id = #{query.quizExamId}
+            )
+    </select>
+
+</mapper>

@@ -12,6 +12,8 @@ public interface SubjectService extends IService<Subject> {
     // 定义获取专题列表方法
     List<SubjectVO> getSubjectList();
 
+    List<SubjectVO> getSubjectList0();
+
     // 专题列表详情方法
     SubjectVO getSubjectDetail(Integer id);
 }

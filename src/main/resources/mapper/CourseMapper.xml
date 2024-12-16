@@ -9,21 +9,27 @@
         <result property="label" column="label"/>
         <result property="browseNum" column="browse_num"/>
         <result property="starNum" column="star_num"/>
+        <result property="deleteFlag" column="delete_flag"/>
     </resultMap>
 
 <!--    上新视频-->
     <select id="getsPageCourseList" resultMap="CourseMap">
         SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
         FROM t_course tc
-        WHERE  tc.state = 4
+        JOIN t_index_content tic ON tc.pk_id = tic.content_id
+        WHERE tc.state = 4 AND tic.type = 2 AND tc.delete_flag = 0
+        ORDER BY tc.update_time DESC
     </select>
 
     <!-- 专题视频 -->
     <select id="getPageCourseList" resultMap="CourseMap">
         SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
         FROM t_course tc
-                 LEFT JOIN t_subject_associated tsa ON tc.pk_id = tsa.content_id
-        WHERE tc.state = 4 AND tc.category_id = #{categoryId}
+             JOIN t_subject_associated tsa ON tc.pk_id = tsa.content_id
+             JOIN t_subject ts ON tsa.subject_id = ts.pk_id
+        WHERE tc.state = 4 AND tc.delete_flag = 0
+          AND tsa.type = 0 AND tsa.delete_flag = 0
+          AND tc.category_id = #{categoryId} AND ts.pk_id = #{subjectId}
         ORDER BY tc.sort
     </select>
 
@@ -31,6 +37,7 @@
         SELECT tc.pk_id, tc.title, tc.cover, tc.label, tc.browse_num, tc.star_num
         FROM t_course tc
         WHERE title LIKE '%${title}%'
+        AND tc.state = 4
     </select>
 
     <select id="isCoursePkIdExist" resultType="boolean">
@@ -48,8 +55,19 @@
                  JOIN t_resource_category trc ON trp.parent_id = trc.pk_id
                  JOIN t_subject_label tsl ON JSON_CONTAINS(tsl.category_id, CAST(trc.pk_id AS JSON), '$')
                  JOIN t_subject ts ON tsl.subject_id = ts.pk_id
-        WHERE tsl.pk_id = #{videosId}
+        WHERE tsl.pk_id = #{videosId} AND tc.state = 4 AND tc.delete_flag = 0
+        ORDER BY tc.update_time DESC
     </select>
 
+    <!--专题视频-->
+    <select id="ztCourse" resultMap="CourseMap">
+        SELECT tc.*
+        FROM t_course tc
+                 LEFT JOIN t_subject_associated tsa ON tc.pk_id = tsa.content_id
+                 JOIN t_subject ts ON tsa.subject_id = ts.pk_id
+        WHERE tc.state = 4 AND ts.pk_id = #{subjectId} AND tc.delete_flag = 0
+        ORDER BY tc.update_time DESC
+        LIMIT 4
+    </select>
 
 </mapper>

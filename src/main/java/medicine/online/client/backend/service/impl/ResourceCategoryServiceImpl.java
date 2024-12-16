@@ -29,8 +29,11 @@ public class ResourceCategoryServiceImpl extends ServiceImpl<ResourceCategoryMap
 
     @Override
     public List<ResourceCategoryVO> getResourceCategoryTree(Integer parentId) {
-        // 获取所有的分类数据（假设 ResourceCategory 表中有 parentId 字段）
+        // 获取所有的分类数据
         List<ResourceCategoryVO> allCategories = ResourceCategoryConvert.INSTANCE.convertToList(baseMapper.selectList(null));
+
+        // 按 sort 字段进行排序
+        allCategories.sort(Comparator.comparingInt(ResourceCategoryVO::getSort)); // 以 sort 字段升序排序
 
         // 获取父节点为指定 parentId 的所有节点
         List<ResourceCategoryVO> rootCategories = allCategories.stream()
@@ -58,6 +61,11 @@ public class ResourceCategoryServiceImpl extends ServiceImpl<ResourceCategoryMap
             for (ResourceCategoryVO child : children) {
                 buildCategoryTree(child, allCategories);
             }
+        }
+
+        // 对每个父节点的子节点进行排序
+        if (parentCategory.getChildren() != null && !parentCategory.getChildren().isEmpty()) {
+            parentCategory.getChildren().sort(Comparator.comparingInt(ResourceCategoryVO::getSort));
         }
     }
 }

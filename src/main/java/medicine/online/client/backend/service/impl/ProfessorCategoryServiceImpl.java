@@ -43,7 +43,8 @@ public class ProfessorCategoryServiceImpl extends ServiceImpl<ProfessorCategoryM
 
         // 递归获取所有子类别，并组合成为一个“目录树”
         QueryWrapper<ProfessorCategory> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("parent_id", parentId);
+        // 按照 sort 字段升序排列
+        queryWrapper.eq("parent_id", parentId).orderByAsc("sort");
         List<ProfessorCategory> categoryList = professorCategoryMapper.selectList(queryWrapper);
 
         if (!CollectionUtils.isEmpty(categoryList)) {

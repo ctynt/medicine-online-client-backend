@@ -43,13 +43,16 @@ public class SearchController {
 
             List<Object> allDataList = new ArrayList<>();
 
+            final String front = "https://medicineonline.oss-cn-hangzhou.aliyuncs.com/";
+
+
             // 查询专题表数据
             // 重新实例化对应类型的Page对象
             Page<SubjectVO> subjectVOPage = searchService.getSubjectByTitleLike(title, new Page<>(pageNum, pageSize));
             List<SubjectVO> subjectVOList = subjectVOPage.getRecords();
             for (SubjectVO subjectVO : subjectVOList) {
                 if (isSubjectPkIdExist(subjectVO.getPkId())) {
-                    subjectVO.setLeixing(0);
+                    subjectVO.setLeixing(1);
                     allDataList.add(subjectVO);
                 }
             }
@@ -60,7 +63,7 @@ public class SearchController {
             List<NewsVO> newsVOList = newsVOPage.getRecords();
             for (NewsVO newsVO : newsVOList) {
                 if (isNewsPkIdExist(newsVO.getPkId())) {
-                    newsVO.setLeixing(1);
+                    newsVO.setLeixing(2);
                     allDataList.add(newsVO);
                 }
             }
@@ -70,8 +73,20 @@ public class SearchController {
             Page<CourseVO> courseVOPage = searchService.getCourseByTitleLike(title, new Page<>(pageNum, pageSize));
             List<CourseVO> courseVOList = courseVOPage.getRecords();
             for (CourseVO courseVO : courseVOList) {
+
+                // 处理 cover 图片前缀
+                String cover = courseVO.getCover();
+                if (cover != null && !cover.startsWith("https://")) {
+                    courseVO.setCover(front + cover);
+                }
+                // 处理 url 前缀
+                String url = courseVO.getUrl();
+                if (url != null && !url.startsWith("https://")) {
+                    courseVO.setUrl(front + url);
+                }
+
                 if (isCoursePkIdExist(courseVO.getPkId())) {
-                    courseVO.setLeixing(2);
+                    courseVO.setLeixing(3);
                     allDataList.add(courseVO);
                 }
             }
@@ -81,30 +96,37 @@ public class SearchController {
             Page<PodcastVO> podcastVOPage = searchService.getPodcastByTitleLike(title, new Page<>(pageNum, pageSize));
             List<PodcastVO> podcastVOList = podcastVOPage.getRecords();
             for (PodcastVO podcastVO : podcastVOList) {
+
+                // 处理 cover 图片前缀
+                String cover = podcastVO.getCover();
+                if (cover != null && !cover.startsWith("https://")) {
+                    podcastVO.setCover(front + cover);
+                }
+
                 if (isPodcastPkIdExist(podcastVO.getPkId())) {
-                    podcastVO.setLeixing(3);
+                    podcastVO.setLeixing(4);
                     allDataList.add(podcastVO);
                 }
             }
 
             // 如果提供了leixing参数，根据leixing过滤结果
-            if (leixing != null) {
+            if (leixing != 0) {
                 List<Object> filteredList = new ArrayList<>();
                 for (Object obj : allDataList) {
-                    if (obj instanceof SubjectVO && leixing == 0) {
+                    if (obj instanceof SubjectVO && leixing == 1) {
                         filteredList.add(obj);
-                    } else if (obj instanceof NewsVO && leixing == 1) {
+                    } else if (obj instanceof NewsVO && leixing == 2) {
                         filteredList.add(obj);
-                    } else if (obj instanceof CourseVO && leixing == 2) {
+                    } else if (obj instanceof CourseVO && leixing == 3) {
                         filteredList.add(obj);
-                    } else if (obj instanceof PodcastVO && leixing == 3) {
+                    } else if (obj instanceof PodcastVO && leixing == 4) {
                         filteredList.add(obj);
                     }
                 }
                 resultPage.setRecords(filteredList);
                 resultPage.setTotal(filteredList.size());
             } else {
-                // 如果没有提供leixing参数，返回所有类型的数据
+                // 如果leixing参数为0，返回所有类型的数据
                 resultPage.setRecords(allDataList);
                 resultPage.setTotal(allDataList.size());
             }
