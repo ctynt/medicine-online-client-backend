@@ -23,4 +23,5 @@ public class SubjectLabelVO {
 
     @Schema(description = "与t_resource_category的pk_id关联")
     private List<Integer> categoryId;
+
 }
