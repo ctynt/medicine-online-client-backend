@@ -8,10 +8,11 @@
         <result property="cover" column="cover" />
         <result property="browseNum" column="browse_num" />
         <result property="url" column="url"/>
+        <result property="totalPage" column="total_page" />
     </resultMap>
 
     <select id="ztBook" resultMap="BookResultMap">
-        SELECT tb.pk_id, tb.title, tb.cover, tb.browse_num,tb.url
+        SELECT tb.pk_id, tb.title, tb.cover, tb.browse_num,tb.url,tb.total_page
         FROM t_book tb
         JOIN t_subject_associated tsa ON tb.pk_id  = tsa.content_id
         JOIN t_subject ts ON tsa.subject_id = ts.pk_id

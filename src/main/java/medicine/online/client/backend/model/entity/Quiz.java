@@ -1,31 +1,30 @@
 package medicine.online.client.backend.model.entity;
 
 import com.baomidou.mybatisplus.annotation.*;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.io.Serial;
 import java.time.LocalDateTime;
+import java.util.List;
 
+/**
+ * @author: minder
+ * @createTime: 2024/12/13 14:58
+ * @description:
+ **/
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
-@TableName(value = "t_course_video", autoResultMap = true)
-public class CourseVideo {
-    @Serial
-    private static final long serialVersionUID = -7118493289943684477L;
+@TableName("t_quiz")
+public class Quiz {
     @TableId(value = "pk_id", type = IdType.AUTO)
     private Integer pkId;
-    private Integer courseId;
     private String title;
-    private Integer length;
-    private String url;
-    private Integer sort;
+    private String brief;
+    private String cover;
+    private String state;
+    private String certificateUrl;
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
+
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    private Integer deleteFlag;
 }

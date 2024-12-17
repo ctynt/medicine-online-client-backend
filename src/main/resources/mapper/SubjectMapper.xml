@@ -12,29 +12,25 @@
         <result property="brief" column="brief" />
         <result property="claim" column="claim" />
         <result property="type" column="type" />
+        <result property="deleteFlag" column="delete_flag" />
     </resultMap>
 
     <select id="getSubjectList" resultMap="SubjectResultMap">
         SELECT ts.*
         FROM t_subject ts
-        WHERE ts.state = 4 AND ts.type = 1
-#         GROUP BY ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
+        WHERE ts.state = 4 AND ts.type = 1 AND ts.delete_flag = 0
     </select>
 
     <select id="getSubjectList0" resultMap="SubjectResultMap">
         SELECT ts.*
         FROM t_subject ts
-        WHERE ts.state = 4 AND ts.type = 0
-#         GROUP BY ts.pk_id, ts.title, ts.cover, ts.label, ts.browse_num, ts.star_num, ts.type
+        WHERE ts.state = 4 AND ts.type = 0 AND ts.delete_flag = 0
     </select>
-
 
     <select id="getSubjectDetail" resultMap="SubjectResultMap">
         SELECT ts.*
         FROM t_subject ts
-        WHERE ts.state = 4 AND ts.pk_id = #{id}
-        GROUP BY ts.pk_id, ts.cover, ts.brief, ts.claim
-<!--        AND ts.type = 0-->
+        WHERE ts.state = 4 AND ts.delete_flag = 0 AND ts.pk_id = #{id}
     </select>
 
     <select id="getSubjectByTitleLike" resultMap="SubjectResultMap">

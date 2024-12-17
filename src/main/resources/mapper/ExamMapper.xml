@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="medicine.online.client.backend.mapper.ExamMapper">
+    <select id="selectExamByDetailId" resultType="medicine.online.client.backend.model.entity.Exam">
+        SELECT * FROM t_quiz_item_exam WHERE delete_flag = 0
+                                    AND quiz_detail_id=#{quizDetailId}
+        ORDER BY create_time DESC
+    </select>
+
+    <!-- 添加的三表联查 -->
+    <select id="selectExamsByExamineId" resultType="medicine.online.client.backend.model.vo.ExamVO">
+        SELECT
+            e.*,
+            p.time_limit
+        FROM
+            t_quiz q
+                JOIN t_quiz_item qi ON q.pk_id = qi.examine_id  -- t_quiz 和 t_quiz_item 的一对多关系
+                JOIN t_quiz_item_exam e ON qi.pk_id = e.quiz_detail_id  -- t_quiz_item 和 t_quiz_item_exam 的一对多关系
+                LEFT JOIN t_quiz_paper p ON e.pk_id = p.quiz_exam_id  -- 连接 t_quiz_paper 表
+        WHERE
+            q.pk_id = #{examineId}  -- 通过 t_quiz 的 pk_id 来查找相关记录
+          AND e.delete_flag = 0  -- 筛选未删除的 t_quiz_item_exam 记录
+          AND qi.type = 0  -- 筛选 t_quiz_item 表中 type 字段为 0 的记录
+        ORDER BY
+            e.create_time DESC;
+    </select>
+</mapper>
