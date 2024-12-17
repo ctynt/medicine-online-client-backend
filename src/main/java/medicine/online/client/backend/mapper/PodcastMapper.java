@@ -23,6 +23,6 @@ public interface PodcastMapper extends BaseMapper<Podcast> {
     boolean isPodcastPkIdExist(Integer pkId);
 
     default List<Podcast> selectListByCategoryId(Integer categoryId) {
-        return this.selectList(new LambdaQueryWrapper<Podcast>().eq(Podcast::getCategoryId, categoryId));
+        return this.selectList(new LambdaQueryWrapper<Podcast>().eq(Podcast::getCategoryId, categoryId).eq(Podcast::getState,4));
     }
 }
