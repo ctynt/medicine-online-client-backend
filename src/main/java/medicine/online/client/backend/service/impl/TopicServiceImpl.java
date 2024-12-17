@@ -131,9 +131,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         ProfessorCategory category = professorCategoryMapper.selectById(professor.getCategoryId());
 
         // 获取学生信息
-        LambdaQueryWrapper<Student> studentQueryWrapper = new LambdaQueryWrapper<>();
-        studentQueryWrapper.eq(Student::getPhone, user.getPhone());
-        Student student = studentMapper.selectOne(studentQueryWrapper);
+        Student student = studentMapper.selectById(user.getRoleId());
         StudentProfession studentProfession = studentProfessionMapper.selectById(student.getProfessionId());
 
         // 设置 Topic 标签（类别 + 学生专业）
