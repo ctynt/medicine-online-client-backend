@@ -26,5 +26,6 @@ public class Bank {
     @TableField(value = "create_time", fill = FieldFill.INSERT)
     private LocalDateTime createTime;
 
-    List<BankOption> bankOptions;
+    @TableField(exist = false)  // 标记该字段不存在于数据库表中
+    private List<BankOption> bankOptions;
 }
