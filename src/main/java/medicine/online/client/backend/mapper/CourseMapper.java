@@ -33,7 +33,7 @@ public interface CourseMapper extends BaseMapper<Course> {
     List<CourseVO> getPageVideosList(Page<CourseVO> page, @Param("query") Query query, Integer videosId);
 
     default List<Course> selectListByCategoryId(Integer categoryId) {
-        return this.selectList(new LambdaQueryWrapper<Course>().eq(Course::getCategoryId, categoryId));
+        return this.selectList(new LambdaQueryWrapper<Course>().eq(Course::getCategoryId, categoryId).eq(Course::getState,4));
     }
 
     // 获取专题视频列表方法

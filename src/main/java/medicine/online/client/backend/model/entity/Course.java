@@ -31,6 +31,7 @@ public class Course implements Serializable {
     private Integer browseNum;
     private Integer starNum;
     private Integer managerId;
+    private Integer state;
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
     @TableField(value = "create_time", fill = FieldFill.INSERT)

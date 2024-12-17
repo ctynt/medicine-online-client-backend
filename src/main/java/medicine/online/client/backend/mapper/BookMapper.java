@@ -14,7 +14,7 @@ public interface BookMapper extends BaseMapper<Book> {
     List<BookVO> ztBook(@Param("subjectId") Integer subjectId);
   
     default List<Book> selectListByCategoryId(Integer categoryId){
-        return this.selectList(new LambdaQueryWrapper<Book>().eq(Book::getCategoryId, categoryId));
+        return this.selectList(new LambdaQueryWrapper<Book>().eq(Book::getCategoryId, categoryId).eq(Book::getState,4));
     }
 }
 
