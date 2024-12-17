@@ -9,8 +9,8 @@ import lombok.Getter;
  */
 @Getter
 public enum TopicStatusEnum {
-    YES(0, "已回答"),
-    NO(1, "未回答");
+    YES(1, "已回答"),
+    NO(0, "未回答");
 
     private final Integer status;
     private final String desc;
