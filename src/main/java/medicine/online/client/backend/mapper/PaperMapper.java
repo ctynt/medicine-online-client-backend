@@ -17,4 +17,6 @@ import java.util.List;
  **/
 public interface PaperMapper extends BaseMapper<Paper> {
     List<PaperBankQuestion> selectPagedQuestions(Page<PaperBankQuestion> page, @Param("query")QuestionQuery query);
+    @Select("SELECT * FROM t_quiz_paper WHERE quiz_exam_id = #{examId} AND delete_flag = 0 LIMIT 1")
+    Paper selectByExamId(@Param("examId") Integer examId);
 }

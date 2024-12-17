@@ -25,7 +25,7 @@
         WHERE
             b.pk_id IN (
                 SELECT
-                    pd.question_Id
+                    pd.question_id
                 FROM
                     t_quiz_paper_detail pd
                         JOIN t_quiz_paper p ON pd.content_id = p.pk_id
