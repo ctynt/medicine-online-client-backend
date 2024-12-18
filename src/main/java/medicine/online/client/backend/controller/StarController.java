@@ -47,7 +47,7 @@ public class StarController {
             // 调用 Service 层查询收藏列表
             Page<StarVO> result = starService.getCollectionList(userId,collectionQuery);
 
-            response.put("code", 200);
+            response.put("code", 0);
             response.put("msg", "查询成功");
             response.put("data", result);
         } catch (IllegalArgumentException e) {

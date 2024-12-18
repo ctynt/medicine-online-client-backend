@@ -3,7 +3,9 @@ package medicine.online.client.backend.model.enums;
 public enum StarTypeEnum {
     SPECIAL(0, "special"),    // 专题
     ARTICLE(1, "article"),    // 资讯
-    VIDEO(2, "video");        // 视频课程
+    VIDEO(2, "video"),      // 视频课程
+    PODCAST(3, "podcast");        // 音频
+
 
     private final Integer code;
     private final String type;
