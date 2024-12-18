@@ -16,6 +16,9 @@ public class ExamSubmitDTO {
     @Schema(description = "试卷ID")
     private Integer examId;
 
+    @Schema(description = "卷类型ID")
+    private Integer paperId;
+
     @Schema(description = "答案列表")
     private List<AnswerDTO> answers;
 }

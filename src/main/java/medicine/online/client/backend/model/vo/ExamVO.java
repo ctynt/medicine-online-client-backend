@@ -17,6 +17,8 @@ public class ExamVO {
     private Integer pkId;
     @Schema(description = "外键")
     private Integer quizDetailId;
+    @Schema(description = "卷类型id")
+    private Integer paperId;
     @Schema(description = "标题")
     private String title;
     @Schema(description = "描述")
