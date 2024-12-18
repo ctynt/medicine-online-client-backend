@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author: minder
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 public class Exam {
     @TableId(value = "pk_id", type = IdType.AUTO)
     private Integer pkId;
+    @TableField("quiz_detail_id")
     private Integer quizDetailId;
     private String title;
     private String brief;
@@ -22,6 +24,11 @@ public class Exam {
     private LocalDateTime startTime;
     private LocalDateTime endTime;
     private Integer isStart;
+    @TableField(exist = false)
+    private List<Paper> papers;
+    @TableField(value = "delete_flag", fill = FieldFill.INSERT)
+    @TableLogic
+    private Integer deleteFlag;
     @TableField(value = "update_time", fill = FieldFill.INSERT_UPDATE)
     private LocalDateTime updateTime;
 
