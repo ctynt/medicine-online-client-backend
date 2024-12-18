@@ -57,7 +57,7 @@ public class PaperServiceImpl extends ServiceImpl<PaperMapper, Paper> implements
                     
                     if (userId != null) {
                         String key = RedisKeys.getQuizUserPaperId(query.getQuizExamId());
-                        redisCache.set(key, userId, RedisCache.HOUR_SIX_EXPIRE);
+                        redisCache.hSet(key, String.valueOf(userId), RedisCache.HOUR_SIX_EXPIRE);
                         log.info("Redis存储结果 - key: {}, value: {}", key, userId);
                     }
                 } else {

@@ -80,7 +80,7 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
                 if (userId != null) {
                     // 存储答题记录，使用试卷ID作为key的一部分
                     String key = RedisKeys.getQuizUserDetail(submitDTO.getPaperId().toString());
-                    redisCache.set(key, userId, RedisCache.HOUR_SIX_EXPIRE);
+                    redisCache.hSet(key, String.valueOf(userId), RedisCache.HOUR_SIX_EXPIRE);
                     log.info("答题记录已缓存 - key: {}, value: {}", key, userId);
                 }
             }
