@@ -1,6 +1,7 @@
 package medicine.online.client.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -224,6 +225,13 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         reply.setCreateTime(LocalDateTime.now());
         reply.setUpdateTime(LocalDateTime.now());
 
+        // 更新 topic.status 如果为 0 则更新为 1
+        if (topic.getStatus() == 0) {
+            UpdateWrapper<Topic> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("pk_id", replyDTO.getTopicId()).set("status", 1);
+            topicMapper.update(null, updateWrapper);
+        }
+
         // 插入数据库
         topicReplyMapper.insert(reply);
 
@@ -231,7 +239,6 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         ReplyVO replyVO = new ReplyVO();
         replyVO.setReplyId(reply.getPkId());
         replyVO.setMessage("回复成功，待审核");
-
         return replyVO;
     }
 
