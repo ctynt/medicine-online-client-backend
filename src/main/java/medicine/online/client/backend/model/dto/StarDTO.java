@@ -2,6 +2,7 @@ package medicine.online.client.backend.model.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import medicine.online.client.backend.model.enums.StarTypeEnum;
 
 /**
  * 添加/删除收藏请求参数封装类
@@ -14,5 +15,9 @@ public class StarDTO {
     @Schema(description = "收藏ID")
     private Integer contentId;
     @Schema(description = "收藏类型（0专题，1资讯，2视频课程）")
-    private Integer type;
+    private String type;
+
+    public Integer getTypeCode() {
+        return StarTypeEnum.getCodeByType(this.type);
+    }
 }

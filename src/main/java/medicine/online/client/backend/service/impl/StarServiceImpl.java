@@ -12,12 +12,12 @@ import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.common.exception.ServerException;
 import medicine.online.client.backend.convert.FeedbackConvert;
 import medicine.online.client.backend.convert.StarConvert;
+import medicine.online.client.backend.mapper.CourseMapper;
 import medicine.online.client.backend.mapper.NewsMapper;
+import medicine.online.client.backend.mapper.PodcastMapper;
 import medicine.online.client.backend.mapper.StarMapper;
 import medicine.online.client.backend.model.dto.StarDTO;
-import medicine.online.client.backend.model.entity.Feedback;
-import medicine.online.client.backend.model.entity.News;
-import medicine.online.client.backend.model.entity.Star;
+import medicine.online.client.backend.model.entity.*;
 import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
 import medicine.online.client.backend.service.StarService;
@@ -40,13 +40,20 @@ public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements St
 
     private final StarMapper starMapper;
     private final NewsMapper newsMapper;
-
+    private final PodcastMapper podcastMapper;
+    private final CourseMapper CourseMapper;
     /**
      * 查询用户的收藏列表（分页）
      */
     @Override
     public Page<StarVO> getCollectionList(Integer userId, StarQuery collectionQuery) {
+//        Integer userId = RequestContext.getUserId();
+
         // 获取用户ID
+        if (userId == null) {
+            throw new IllegalArgumentException("User ID cannot be null");
+        }
+
         Integer pageNum = collectionQuery.getPageNum();
         // 当前页
         Integer pageSize = collectionQuery.getPageSize();
@@ -75,6 +82,14 @@ public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements St
             News news = newsMapper.selectById(star.getContentId());
             if (news != null) {
                 starVO.setInfo(news);
+            }
+            Podcast podcast = podcastMapper.selectById(star.getContentId());
+            if (podcast != null) {
+                starVO.setInfo1(podcast);
+            }
+            Course course = CourseMapper.selectById(star.getContentId());
+            if (course != null) {
+                starVO.setInfo2(course);
             }
 
             return starVO;

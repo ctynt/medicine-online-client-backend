@@ -5,8 +5,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import medicine.online.client.backend.common.cache.RequestContext;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.model.dto.StarDTO;
+import medicine.online.client.backend.model.enums.StarTypeEnum;
 import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
 import medicine.online.client.backend.service.StarService;
@@ -62,9 +64,17 @@ public class StarController {
     @PostMapping("/v2/add")
     @Operation(summary = "添加收藏")
     public Result<Object> addCollection(HttpServletRequest request,@RequestBody StarDTO starDTO) {
+
+
+
         String token = request.getHeader("Authorization");
         JSONObject claims = JwtUtil.getJSONObject(token);
         Integer userId = claims.getInt("userId");
+
+        // 将前端传来的 type（如"video"）转换为对应的数字编码（如 2）
+        Integer typeCode = StarTypeEnum.getCodeByType(starDTO.getType());
+        starDTO.setType(String.valueOf(typeCode));
+
         starService.addCollection(userId, starDTO);
         return Result.ok();
     }
@@ -78,6 +88,11 @@ public class StarController {
         String token = request.getHeader("Authorization");
         JSONObject claims = JwtUtil.getJSONObject(token);
         Integer userId = claims.getInt("userId");
+
+        // 将前端传来的 type（如"video"）转换为对应的数字编码（如 2）
+        Integer typeCode = StarTypeEnum.getCodeByType(starDTO.getType());
+        starDTO.setType(String.valueOf(typeCode));
+
         starService.deleteCollection(userId, starDTO);
         return Result.ok();
     }
