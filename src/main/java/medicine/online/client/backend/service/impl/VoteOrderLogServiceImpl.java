@@ -55,6 +55,6 @@ public class VoteOrderLogServiceImpl extends ServiceImpl<VoteOrderLogMapper, Vot
     @Override
     public Boolean isVote(Integer activityId){
         Integer userId = RequestContext.getUserId();
-        return baseMapper.selectByUserId(userId,activityId) != null;
+        return baseMapper.selectByUserId(userId,activityId) == null;
     }
 }
