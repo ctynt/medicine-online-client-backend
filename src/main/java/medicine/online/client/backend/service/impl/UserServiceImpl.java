@@ -304,11 +304,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         user.setSlogan(userEditDTO.getSlogan());
         user.setAvatar(userEditDTO.getAvatar());
         student.setSex(userEditDTO.getSex());
-        if (userEditDTO.getProvince() != null && userEditDTO.getCity() != null && userEditDTO.getArea() != null) {
-            user.setProvince(cityCodeMapper.getByName(userEditDTO.getProvince()).getPkId());
-            user.setCity(cityCodeMapper.getByName(userEditDTO.getCity()).getPkId());
-            user.setArea(cityCodeMapper.getByName(userEditDTO.getArea()).getPkId());
-        }
 
         student.setLicence(userEditDTO.getLicence());
 
