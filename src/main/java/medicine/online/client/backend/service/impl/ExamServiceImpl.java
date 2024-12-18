@@ -1,10 +1,15 @@
 package medicine.online.client.backend.service.impl;
 
 
+import cn.hutool.json.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.annotation.Resource;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import medicine.online.client.backend.common.cache.RedisCache;
+import medicine.online.client.backend.common.cache.RedisKeys;
 import medicine.online.client.backend.common.exception.ServerException;
 import medicine.online.client.backend.mapper.BankMapper;
 import medicine.online.client.backend.mapper.ExamMapper;
@@ -19,7 +24,10 @@ import medicine.online.client.backend.model.entity.PaperDetail;
 import medicine.online.client.backend.model.vo.ExamResultVO;
 import medicine.online.client.backend.model.vo.PaperQuestionVO;
 import medicine.online.client.backend.service.ExamService;
+import medicine.online.client.backend.utils.JwtUtil;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,12 +42,15 @@ import java.util.stream.Collectors;
  **/
 @Service
 @AllArgsConstructor
+@Slf4j
 public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements ExamService {
     @Resource
     private ExamMapper examMapper;
     private final BankMapper bankMapper;
     private final PaperMapper paperMapper;
     private final PaperDetailMapper paperDetailMapper;
+    private final RedisCache redisCache;
+    private final HttpServletRequest request;
 
     @Override
     public List<Exam> getExamList(Integer quizDetailId) {
@@ -57,6 +68,24 @@ public class ExamServiceImpl extends ServiceImpl<ExamMapper, Exam> implements Ex
         List<PaperQuestionVO> paperQuestions = examMapper.getPaperQuestions(submitDTO.getPaperId());
         if (paperQuestions.isEmpty()) {
             throw new IllegalStateException("未找到试卷题目");
+        }
+
+        try {
+            // 从请求头获取token并解析userId
+            String token = request.getHeader("Authorization");
+            if (token != null) {
+                JSONObject claims = JwtUtil.getJSONObject(token);
+                Integer userId = claims.getInt("userId");
+                
+                if (userId != null) {
+                    // 存储答题记录，使用试卷ID作为key的一部分
+                    String key = RedisKeys.getQuizUserDetail(submitDTO.getPaperId().toString());
+                    redisCache.set(key, userId, RedisCache.HOUR_SIX_EXPIRE);
+                    log.info("答题记录已缓存 - key: {}, value: {}", key, userId);
+                }
+            }
+        } catch (Exception e) {
+            log.error("Redis缓存答题记录失败: ", e);
         }
 
         // 计算得分
