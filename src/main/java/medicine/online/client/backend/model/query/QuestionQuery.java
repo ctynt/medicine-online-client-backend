@@ -14,6 +14,9 @@ import lombok.EqualsAndHashCode;
 @Schema(name = "QuestionQuery", description = "题库查询")
 public class QuestionQuery extends Query{
 
-    @Schema(description = "考试id")
+    @Schema(description = "试卷ID")
+    private Integer paperId;
+    
+    @Schema(description = "考试ID")
     private Integer quizExamId;
 }

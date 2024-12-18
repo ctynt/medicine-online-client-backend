@@ -13,5 +13,5 @@ import medicine.online.client.backend.model.query.QuestionQuery;
  * @description:
  **/
 public interface PaperService extends IService<Paper> {
-    PageResult<PaperBankQuestion> getPaperQuestionsByExamId(QuestionQuery query);
+    PageResult<PaperBankQuestion> getPaperQuestionsByPaperId(QuestionQuery query);
 }

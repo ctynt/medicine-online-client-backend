@@ -5,6 +5,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import medicine.online.client.backend.common.exception.ErrorCode;
+import medicine.online.client.backend.common.exception.ServerException;
 import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.mapper.ExamMapper;
@@ -59,9 +61,12 @@ public class QuizController {
     }
 
     @PostMapping("/questionList")
-    @Operation(summary = "题目选项")
+    @Operation(summary = "获取试卷题目选项")
     public Result<PageResult<PaperBankQuestion>> list(@RequestBody @Valid QuestionQuery query){
-        return Result.ok(paperService.getPaperQuestionsByExamId(query));
+        if (query.getPaperId() == null) {
+            throw new ServerException(ErrorCode.PARAMS_ERROR);
+        }
+        return Result.ok(paperService.getPaperQuestionsByPaperId(query));
     }
 
     @PostMapping("/submit")
