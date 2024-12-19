@@ -16,7 +16,7 @@ public class SwaggerConfig {
                         .title("中医在线 API")
                         .contact(new Contact().name("ctynt").email("2597704619@qq.com"))
                         .version("1.0")
-                        .description("资源分享应⽤ API 接⼝⽂档")
+                        .description("中医在线应用 API 接⼝⽂档")
                         .license(new License().name("Apache 2.0").url("http://doc.xiaominfo.com")));
     }
 }

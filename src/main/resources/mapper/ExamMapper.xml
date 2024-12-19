@@ -6,4 +6,45 @@
                                     AND quiz_detail_id=#{quizDetailId}
         ORDER BY create_time DESC
     </select>
+
+    <!-- 添加的三表联查 -->
+    <select id="selectExamsByExamineId" resultType="medicine.online.client.backend.model.vo.ExamVO">
+        SELECT
+            e.*,
+            p.time_limit,
+            p.title as paper_title,
+            p.pk_id as paper_id     -- 添加试卷ID
+        FROM
+            t_quiz q
+                JOIN t_quiz_item qi ON q.pk_id = qi.examine_id
+                JOIN t_quiz_item_exam e ON qi.pk_id = e.quiz_detail_id
+                LEFT JOIN t_quiz_paper p ON e.pk_id = p.quiz_exam_id
+        WHERE
+            q.pk_id = #{examineId}
+          AND e.delete_flag = 0
+          AND qi.type = 0
+          AND e.is_start = 1
+        ORDER BY
+            e.create_time DESC, p.pk_id ASC;  -- 添加试卷ID排序
+    </select>
+
+    <!-- 获取试卷的题目和分数信息 -->
+    <select id="getPaperQuestions" resultType="medicine.online.client.backend.model.vo.PaperQuestionVO">
+        SELECT
+            p.pk_id as paperId,
+            p.title as paperTitle,
+            p.time_limit as timeLimit,
+            p.simple_score as simpleScore,
+            p.multiple_score as multipleScore,
+            p.blank_score as blankScore,
+            p.score as passScore,
+            b.pk_id as questionId,
+            b.option_type as optionType,
+            b.answer as correctAnswer
+        FROM t_quiz_paper p
+                 JOIN t_quiz_paper_detail pd ON p.pk_id = pd.content_id
+                 JOIN t_quiz_bank b ON pd.question_id = b.pk_id
+        WHERE p.pk_id = #{paperId}
+          AND p.delete_flag = 0
+    </select>
 </mapper>

@@ -4,15 +4,20 @@ import cn.hutool.jwt.JWTUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import medicine.online.client.backend.common.cache.RequestContext;
+import medicine.online.client.backend.common.exception.ServerException;
+import medicine.online.client.backend.convert.FeedbackConvert;
+import medicine.online.client.backend.convert.StarConvert;
+import medicine.online.client.backend.mapper.CourseMapper;
 import medicine.online.client.backend.mapper.NewsMapper;
+import medicine.online.client.backend.mapper.PodcastMapper;
 import medicine.online.client.backend.mapper.StarMapper;
 import medicine.online.client.backend.model.dto.StarDTO;
-import medicine.online.client.backend.model.entity.News;
-import medicine.online.client.backend.model.entity.Star;
+import medicine.online.client.backend.model.entity.*;
 import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
 import medicine.online.client.backend.service.StarService;
@@ -31,11 +36,12 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @AllArgsConstructor
-public class StarServiceImpl implements StarService {
+public class StarServiceImpl extends ServiceImpl<StarMapper, Star> implements StarService {
 
     private final StarMapper starMapper;
     private final NewsMapper newsMapper;
-
+    private final PodcastMapper podcastMapper;
+    private final CourseMapper CourseMapper;
     /**
      * 查询用户的收藏列表（分页）
      */
@@ -77,6 +83,14 @@ public class StarServiceImpl implements StarService {
             if (news != null) {
                 starVO.setInfo(news);
             }
+            Podcast podcast = podcastMapper.selectById(star.getContentId());
+            if (podcast != null) {
+                starVO.setInfo1(podcast);
+            }
+            Course course = CourseMapper.selectById(star.getContentId());
+            if (course != null) {
+                starVO.setInfo2(course);
+            }
 
             return starVO;
         }).collect(Collectors.toList());
@@ -96,45 +110,26 @@ public class StarServiceImpl implements StarService {
      * 添加收藏
      */
     @Override
-    public boolean addCollection(Integer userId,StarDTO starDTO) {
-//        Integer userId = RequestContext.getUserId();
+    public void addCollection(Integer userId,StarDTO starDTO) {
         // 获取当前用户ID
+//        Integer userId = RequestContext.getUserId();
+        starDTO.setUserId(userId);
 
-        if (userId == null) {
-            log.error("User ID is null when adding collection");
-            return false;
+        try {
+            if (baseMapper.insert(StarConvert.INSTANCE.convert(starDTO)) < 1 ){
+                throw new ServerException("提交失败");
+            }
+        } catch (Exception e) {
+            throw new ServerException(e.getMessage());
         }
-
-        // 创建收藏记录
-        Star star = new Star();
-        star.setUserId(userId);
-        star.setContentId(starDTO.getContentId());
-        star.setType(starDTO.getType());
-        star.setDeleteFlag(0);
-        // 默认未删除
-        star.setCreateTime(LocalDateTime.now());
-        star.setUpdateTime(LocalDateTime.now());
-
-        // 插入收藏记录
-        int result = starMapper.insert(star);
-
-        // 返回结果
-        return result > 0;
     }
 
     /**
      * 删除收藏
      */
     @Override
-    public boolean deleteCollection(Integer userId, StarDTO starDTO) {
-//        Integer userId = RequestContext.getUserId();
-     // 获取当前用户ID
-
-        if (userId == null) {
-            log.error("User ID is null when deleting collection");
-            return false;
-        }
-
+    public void deleteCollection(Integer userId, StarDTO starDTO) {
+        starDTO.setUserId(userId);
         // 更新收藏记录的删除标志为 1（已删除）
         UpdateWrapper<Star> updateWrapper = new UpdateWrapper<>();
         updateWrapper.eq("user_id", userId)
@@ -143,12 +138,8 @@ public class StarServiceImpl implements StarService {
                 .eq("delete_flag", 0)
                 // 只更新未删除的记录
                 .set("delete_flag", 1);
-        // 更新为已删除
 
-        // 执行更新操作
         int result = starMapper.update(null, updateWrapper);
-
-        return result > 0;
     }
 }
 

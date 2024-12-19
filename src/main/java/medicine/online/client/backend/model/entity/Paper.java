@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 public class Paper {
     @TableId(value = "pk_id", type = IdType.AUTO)
     private Integer pkId;
+    @TableField("quiz_exam_id")
     private Integer quizExamId;
     private String title;
     private Integer timeLimit;

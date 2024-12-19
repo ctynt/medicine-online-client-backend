@@ -58,9 +58,7 @@ public class ProfessorServiceImpl extends ServiceImpl<ProfessorMapper, Professor
             topicVO.setName(user.getNickname());
             Professor professor = professorMapper.selectById(topic.getProfessorId());
             ProfessorCategory category = professorCategoryMapper.selectById(professor.getCategoryId());
-            LambdaQueryWrapper<Student> studentQueryWrapper = new LambdaQueryWrapper<>();
-            studentQueryWrapper.eq(Student::getPhone, user.getPhone());
-            Student student = studentMapper.selectOne(studentQueryWrapper);
+            Student student = studentMapper.selectById(user.getRoleId());
             StudentProfession studentProfession = studentProfessionMapper.selectById(student.getProfessionId());
             topicVO.setTag(category.getName() + " " + studentProfession.getName());
             topicVO.setImg(topic.getImg());

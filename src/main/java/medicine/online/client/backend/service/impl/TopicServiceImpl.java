@@ -1,6 +1,7 @@
 package medicine.online.client.backend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,9 +73,7 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
             ProfessorCategory category = professorCategoryMapper.selectById(professor.getCategoryId());
 
             // 获取学生信息
-            LambdaQueryWrapper<Student> studentQueryWrapper = new LambdaQueryWrapper<>();
-            studentQueryWrapper.eq(Student::getPhone, user.getPhone());
-            Student student = studentMapper.selectOne(studentQueryWrapper);
+            Student student = studentMapper.selectById(user.getRoleId());
             StudentProfession studentProfession = studentProfessionMapper.selectById(student.getProfessionId());
 
             // 设置 Topic 标签（类别 + 学生专业）
@@ -107,6 +106,37 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
 
             return replyData;
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public TopicVO getTopicDetail(Integer id) {
+        Topic topic = topicMapper.selectById(id);
+        // 将 Topic 转换为 TopicVO
+        TopicVO topicVO = new TopicVO();
+        topicVO.setContent(topic.getContent());
+        topicVO.setCreateTime(topic.getCreateTime());
+        topicVO.setStatus(TopicStatusEnum.getDescription(topic.getStatus()));
+        // 将Topic状态转换为描述
+
+        topicVO.setPkId(topic.getPkId());
+
+        // 获取 Topic 的提问者信息
+        User user = userMapper.selectById(topic.getUserId());
+        topicVO.setAvatar(user.getAvatar());
+        topicVO.setName(user.getNickname());
+
+        // 获取教授信息
+        Professor professor = professorService.getById(topic.getProfessorId());
+        ProfessorCategory category = professorCategoryMapper.selectById(professor.getCategoryId());
+
+        // 获取学生信息
+        Student student = studentMapper.selectById(user.getRoleId());
+        StudentProfession studentProfession = studentProfessionMapper.selectById(student.getProfessionId());
+
+        // 设置 Topic 标签（类别 + 学生专业）
+        topicVO.setTag(category.getName() + " " + studentProfession.getName());
+        topicVO.setImg(topic.getImg());
+        return topicVO;
     }
 
     @Override
@@ -195,6 +225,13 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         reply.setCreateTime(LocalDateTime.now());
         reply.setUpdateTime(LocalDateTime.now());
 
+        // 更新 topic.status 如果为 0 则更新为 1
+        if (topic.getStatus() == 0) {
+            UpdateWrapper<Topic> updateWrapper = new UpdateWrapper<>();
+            updateWrapper.eq("pk_id", replyDTO.getTopicId()).set("status", 1);
+            topicMapper.update(null, updateWrapper);
+        }
+
         // 插入数据库
         topicReplyMapper.insert(reply);
 
@@ -202,7 +239,6 @@ public class TopicServiceImpl extends ServiceImpl<TopicMapper, Topic> implements
         ReplyVO replyVO = new ReplyVO();
         replyVO.setReplyId(reply.getPkId());
         replyVO.setMessage("回复成功，待审核");
-
         return replyVO;
     }
 

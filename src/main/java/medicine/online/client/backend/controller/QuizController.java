@@ -5,14 +5,18 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.annotation.Resource;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import medicine.online.client.backend.common.exception.ErrorCode;
+import medicine.online.client.backend.common.exception.ServerException;
 import medicine.online.client.backend.common.result.PageResult;
 import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.mapper.ExamMapper;
+import medicine.online.client.backend.model.dto.ExamSubmitDTO;
 import medicine.online.client.backend.model.dto.PaperBankQuestion;
 import medicine.online.client.backend.model.entity.Exam;
 import medicine.online.client.backend.model.entity.Quiz;
 import medicine.online.client.backend.model.query.Query;
 import medicine.online.client.backend.model.query.QuestionQuery;
+import medicine.online.client.backend.model.vo.ExamResultVO;
 import medicine.online.client.backend.model.vo.QuizItemVO;
 import medicine.online.client.backend.service.ExamService;
 import medicine.online.client.backend.service.PaperService;
@@ -50,15 +54,24 @@ public class QuizController {
         return Result.ok(quizItemService.getItemList(examineId));
     }
 
-    @PostMapping("/exam")
+    @PostMapping("/exam/{examineId}")
     @Operation(summary = "试卷列表")
-    public Result<List<Exam>> getExamList(@RequestParam Integer quizDetailId){
-        return Result.ok(examService.getExamList(quizDetailId));
+    public Result<List<Exam>> getExamList(@PathVariable Integer examineId){
+        return Result.ok(examService.getExamsByExamineId(examineId));
     }
 
     @PostMapping("/questionList")
-    @Operation(summary = "题目选项")
+    @Operation(summary = "获取试卷题目选项")
     public Result<PageResult<PaperBankQuestion>> list(@RequestBody @Valid QuestionQuery query){
-        return Result.ok(paperService.getPaperQuestionsByExamId(query));
+        if (query.getPaperId() == null) {
+            throw new ServerException(ErrorCode.PARAMS_ERROR);
+        }
+        return Result.ok(paperService.getPaperQuestionsByPaperId(query));
+    }
+
+    @PostMapping("/submit")
+    @Operation(summary = "提交试卷")
+    public Result<ExamResultVO> submitExam(@RequestBody @Valid ExamSubmitDTO submitDTO) {
+        return Result.ok(examService.submitExam(submitDTO));
     }
 }

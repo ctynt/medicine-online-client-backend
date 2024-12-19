@@ -5,7 +5,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
+import medicine.online.client.backend.common.cache.RequestContext;
+import medicine.online.client.backend.common.result.Result;
 import medicine.online.client.backend.model.dto.StarDTO;
+import medicine.online.client.backend.model.enums.StarTypeEnum;
 import medicine.online.client.backend.model.query.StarQuery;
 import medicine.online.client.backend.model.vo.StarVO;
 import medicine.online.client.backend.service.StarService;
@@ -40,12 +43,11 @@ public class StarController {
         String token = request.getHeader("Authorization");
         JSONObject claims = JwtUtil.getJSONObject(token);
         Integer userId = claims.getInt("userId");
-//        Integer userId = 1;
         try {
             // 调用 Service 层查询收藏列表
             Page<StarVO> result = starService.getCollectionList(userId,collectionQuery);
 
-            response.put("code", 200);
+            response.put("code", 0);
             response.put("msg", "查询成功");
             response.put("data", result);
         } catch (IllegalArgumentException e) {
@@ -61,24 +63,20 @@ public class StarController {
      */
     @PostMapping("/v2/add")
     @Operation(summary = "添加收藏")
-    public ResponseEntity<Map<String, Object>> addCollection(HttpServletRequest request, @RequestBody StarDTO starDTO) {
-        Map<String, Object> response = new HashMap<>();
+    public Result<Object> addCollection(HttpServletRequest request,@RequestBody StarDTO starDTO) {
+
+
+
         String token = request.getHeader("Authorization");
         JSONObject claims = JwtUtil.getJSONObject(token);
         Integer userId = claims.getInt("userId");
-//      Integer userId = 1;
-        // 调用 Service 层添加收藏
-        boolean success = starService.addCollection(userId, starDTO);
 
-        if (success) {
-            response.put("code", 200);
-            response.put("msg", "添加收藏成功");
-        } else {
-            response.put("code", 500);
-            response.put("msg", "添加收藏失败");
-        }
+        // 将前端传来的 type（如"video"）转换为对应的数字编码（如 2）
+        Integer typeCode = StarTypeEnum.getCodeByType(starDTO.getType());
+        starDTO.setType(String.valueOf(typeCode));
 
-        return ResponseEntity.ok(response);
+        starService.addCollection(userId, starDTO);
+        return Result.ok();
     }
 
     /**
@@ -86,23 +84,17 @@ public class StarController {
      */
     @PostMapping("/v2/delete")
     @Operation(summary = "删除收藏")
-    public ResponseEntity<Map<String, Object>> deleteCollection(HttpServletRequest request,@RequestBody StarDTO starDTO) {
-        Map<String, Object> response = new HashMap<>();
+    public Result<Object> deleteCollection(HttpServletRequest request,@RequestBody StarDTO starDTO) {
         String token = request.getHeader("Authorization");
         JSONObject claims = JwtUtil.getJSONObject(token);
         Integer userId = claims.getInt("userId");
-        // 调用 Service 层删除收藏
-        boolean success = starService.deleteCollection(userId, starDTO);
 
-        if (success) {
-            response.put("code", 200);
-            response.put("msg", "删除收藏成功");
-        } else {
-            response.put("code", 500);
-            response.put("msg", "删除收藏失败");
-        }
+        // 将前端传来的 type（如"video"）转换为对应的数字编码（如 2）
+        Integer typeCode = StarTypeEnum.getCodeByType(starDTO.getType());
+        starDTO.setType(String.valueOf(typeCode));
 
-        return ResponseEntity.ok(response);
+        starService.deleteCollection(userId, starDTO);
+        return Result.ok();
     }
 }
 
